@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchUsers } from '../actions';
 import { Panel } from 'react-bootstrap';
+import Window from './Window';
 import Table from './Table';
+
 
 
 
@@ -45,8 +47,11 @@ class User extends Component {
 
  
     render() {
+        let errors = '';
+        let msg_success = '';
+
         return (
-            <Panel bsStyle="default" className="mx-auto">
+            /*<Panel bsStyle="default" className="mx-auto">
                 <Panel.Heading>
                     <Panel.Title componentClass="h3">Lista de Usuários</Panel.Title>
                 </Panel.Heading>
@@ -54,7 +59,9 @@ class User extends Component {
 
                     {this.renderUsers()}
                 </Panel.Body>
-            </Panel>
+            </Panel>*/
+
+            <Window name="Lista de Usuários" element={this.renderUsers()} msgError={errors} msgSuccess={msg_success} />
         );
     }
     
