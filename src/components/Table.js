@@ -64,7 +64,7 @@ class Table extends Component {
         // some action...
         // then redirect
         console.log("tamanho do estado: ", selected.length )
-        if(selected.length == 1)
+        if(selected.length === 1)
             this.setState({redirect: true});
     }
 
@@ -88,10 +88,11 @@ class Table extends Component {
     }
 
     onRowSelect(row, isSelected){
-        var rowStr = "";
+        /* let rowStr = "";
+        
         for(var prop in row){
           rowStr+=prop+": '"+row[prop]+"' ";
-        }
+        } */
         //let selected = {}
         if(isSelected){
             //selected = this.state.selectedRows;

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 //import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchUserFields } from '../actions';
-import { createUser } from '../actions';
+import { fetchUserFields, createUser, fetchUser } from '../actions';
 
 import Window from './Window';
 import MyForm from './MyForm';
 
-class UserNew extends Component{
+class UserEdit extends Component{
 
     constructor(props, context) {
         super(props, context);
@@ -20,6 +19,7 @@ class UserNew extends Component{
 
     componentDidMount() {
         this.props.fetchUserFields()
+        this.props.fetchUser('5b6af9e3d178c01842ebf011')
     }
 
     getValidationState() {
@@ -29,17 +29,10 @@ class UserNew extends Component{
         else if (length > 0) return 'error'; 
         return null;
     }
-
-    /* handleChange(e) {
-        this.setState({ value: e.target.value });
-    } */
-    
+   
 
     onSubmit(values) {
-        // this === component (thats the reason we used .bind(this)
-        // on onSubmit, because different context of variable)
-        //console.log(values);
-        //let ret = this.props.createUser(values, () => this.props.history.push('/'));
+
         console.log("chamou o create: ", this.props.createUser(values));
         if(this.props.usersFields){
             console.log("Users: ", this.props.usersFields);
@@ -50,8 +43,8 @@ class UserNew extends Component{
         this.props.createUser(values)
     }
 
-    getForm(errors, fields) {
-        return (<MyForm errors={errors} fields={fields} onSubmit={this.submit.bind(this)} />)
+    getForm(errors, fields, object) {
+        return (<MyForm errors={errors} fields={fields} object={object} onSubmit={this.submit.bind(this)} />)
     }
 
     render() {
@@ -59,6 +52,7 @@ class UserNew extends Component{
         let msg_success = null;
         if(this.props.users){
             console.log("propppppppppppssssss.userrrr: ", this.props.users)
+            console.log("userrrr: ", this.props.user)
             msg_success = this.props.users.msg_success;
         }
 
@@ -73,12 +67,12 @@ class UserNew extends Component{
             let fields = this.props.usersFields;
             delete fields['_id'];
             delete fields['__v'];
-            element = this.getForm(errors, fields)
+            element = this.getForm(errors, fields, this.props.users)
         }
 
         return(
             <div>
-            <Window name="Cadastro de novo usuário" element={element} msgError={errors} msgSuccess={msg_success} />
+            <Window name="Edição de usuário" element={element} msgError={errors} msgSuccess={msg_success} />
             
             </div>
         )
@@ -88,10 +82,11 @@ class UserNew extends Component{
 
 function mapStateToProps(state){
     return {
+        user: state.user,
         users: state.users,
         usersFields: state.usersFields
     }
 }
 
 //export default connect(mapStateToProps, { createUser, fetchUserFields })(UserNew)
-export default connect(mapStateToProps, { fetchUserFields, createUser })(UserNew)
+export default connect(mapStateToProps, { fetchUserFields, fetchUser, createUser })(UserEdit)

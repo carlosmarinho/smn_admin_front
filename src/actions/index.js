@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { CREATE, CREATE_USER, CREATE_USERS_ERROR } from "./types";
-import { FETCH_USERS, FETCH_USER_FIELDS } from "./types";
+import { CREATE_USER, CREATE_USERS_ERROR } from "./types";
+import { FETCH_USER, FETCH_USERS, FETCH_USER_FIELDS } from "./types";
 import { FETCH_LOCATIONS } from "./types";
 
 export async function createUser(values, callback) {
@@ -22,8 +22,17 @@ export async function createUser(values, callback) {
 
 }
 
+export const fetchUser = (id) => {
+
+    const request = axios.get(`http://localhost:3001/users/${id}`);
+
+    return {
+        type: FETCH_USER,
+        payload: request
+    }
+}
+
 export const fetchUsers = () => {
-    console.log("no estado: ");
     const request = axios.get("http://localhost:3001/users");
 
     return {
@@ -33,7 +42,7 @@ export const fetchUsers = () => {
 }
 
 export const fetchUserFields = () => {
-    console.log("no estado: ");
+
     const request = axios.get("http://localhost:3001/users/fields");
 
     return {

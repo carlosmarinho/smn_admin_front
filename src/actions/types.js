@@ -1,6 +1,7 @@
 export const CREATE = "CREATE";
 export const CREATE_USER = "CREATE_USER";
 export const CREATE_USERS_ERROR = "CREATE_USERS_ERROR";
+export const FETCH_USER = "FETCH_USER";
 export const FETCH_USERS = "FETCH_USERS";
 export const FETCH_USER_FIELDS = "FETCH_USER_FIELDS";
 export const FETCH_LOCATIONS = "FETCH_LOCATIONS";

@@ -8,7 +8,7 @@ import reducers from '../reducers';
 import Header from './header';
 import User from './User';
 import UserNew from './UserNew';
-import UserNew from './UserEdit';
+import UserEdit from './UserEdit';
 import Location from './Location'
 
 

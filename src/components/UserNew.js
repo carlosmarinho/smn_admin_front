@@ -58,7 +58,6 @@ class UserNew extends Component{
         let errors = null;
         let msg_success = null;
         if(this.props.users){
-            console.log("propppppppppppssssss.userrrr: ", this.props.users)
             msg_success = this.props.users.msg_success;
         }
 
