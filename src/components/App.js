@@ -8,6 +8,7 @@ import reducers from '../reducers';
 import Header from './header';
 import User from './User';
 import UserNew from './UserNew';
+import UserNew from './UserEdit';
 import Location from './Location'
 
 
@@ -28,6 +29,7 @@ const App = () => {
                             <Route exact path="/localidade" component={Location} />
                             <Route exact path="/user" component={User} />
                             <Route path="/user/new" component={UserNew} />
+                            <Route path="/user/edit/" component={UserEdit} />
                         </div>
                     </div>
                 </Route>

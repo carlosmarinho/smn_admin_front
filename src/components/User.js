@@ -1,6 +1,7 @@
+import _ from 'lodash'
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchUsers } from '../actions';
+import { fetchUsers, fetchUserFields } from '../actions';
 import { Panel } from 'react-bootstrap';
 import Window from './Window';
 import Table from './Table';
@@ -17,15 +18,33 @@ class User extends Component {
     }
 
     componentDidMount() {
+        this.props.fetchUserFields()
         this.props.fetchUsers()
     }
 
+    createColumns(fields) {
+        return _.map(fields, (field, key) => {
+            let column = {
+                dataField: key,
+                text: _.capitalize(key).replace('_'," "),
+                isKey: key=='_id'? true: false,
+                hidden: key=='_id' || key=='__v'? true: false,
+            }
+            
+            return column
+        })
+
+        
+    }
+
     renderUsers() {
+        console.log("prooooooopppppppppppppppppppppsssssssssss: ", this.props)
         if(this.props.users){
+
             const columns = [{
                 dataField: '_id',
                 text: 'ID',
-                isKey: true
+                isKey: true,
               }, {
                   dataField: 'username',
                   text: 'Usuário',
@@ -39,7 +58,14 @@ class User extends Component {
               }
             ];
 
-            return <Table data={this.props.users} columns={columns} name="Usuário" create resource="user"></Table>
+            let columns1 = this.createColumns(this.props.usersFields);
+            
+            const selectRow = {
+                mode: 'checkbox',
+                clickToSelect: true
+              };
+
+            return <Table data={this.props.users} columns={columns1} name="Usuário" create resource="user" />
             //return <BootstrapTable keyField='id' data={ this.props.users } columns={ columns } />
         }
         return <div>Carregando Usuários ...</div>;
@@ -51,16 +77,7 @@ class User extends Component {
         let msg_success = '';
 
         return (
-            /*<Panel bsStyle="default" className="mx-auto">
-                <Panel.Heading>
-                    <Panel.Title componentClass="h3">Lista de Usuários</Panel.Title>
-                </Panel.Heading>
-                <Panel.Body className="">
-
-                    {this.renderUsers()}
-                </Panel.Body>
-            </Panel>*/
-
+     
             <Window name="Lista de Usuários" element={this.renderUsers()} msgError={errors} msgSuccess={msg_success} />
         );
     }
@@ -68,7 +85,10 @@ class User extends Component {
 }
 
 function mapStateToProps(state){
-    return {users: state.users}
+    return {
+        users: state.users,
+        usersFields: state.usersFields
+    }
 }
 
-export default connect(mapStateToProps, { fetchUsers })(User);
+export default connect(mapStateToProps, { fetchUsers, fetchUserFields })(User);
