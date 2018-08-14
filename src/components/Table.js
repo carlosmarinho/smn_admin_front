@@ -64,12 +64,16 @@ class Table extends Component {
         // some action...
         // then redirect
         console.log("tamanho do estado: ", selected.length )
-        if(selected.length === 1)
+        if(selected.length === 1) {
             this.setState({redirect: true});
+        }
     }
 
     urlEdit(){
-        return this.props.resource + "/edit/" + selected[0];
+        console.log("url a ser editada: ", this.props.resource + "/edit/" + selected[0])
+        let url = this.props.resource + "/edit/" + selected[0];
+        selected = [];
+        return url;
     }
 
     showEditButton() {

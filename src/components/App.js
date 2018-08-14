@@ -29,7 +29,7 @@ const App = () => {
                             <Route exact path="/localidade" component={Location} />
                             <Route exact path="/user" component={User} />
                             <Route path="/user/new" component={UserNew} />
-                            <Route path="/user/edit/" component={UserEdit} />
+                            <Route path="/user/edit/:id" component={UserEdit} />
                         </div>
                     </div>
                 </Route>

@@ -1,7 +1,8 @@
 import _ from 'lodash'
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
-
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 
 class MyForm extends Component{
@@ -13,9 +14,11 @@ class MyForm extends Component{
     }
 
     renderField(field) {
+        console.log("objeto no meu form: ", field)
         const { meta: { touched, error } } = field;
         let classFeedback = '';
         let className = '';
+        
         if(touched) {
             
             //className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
@@ -69,7 +72,8 @@ class MyForm extends Component{
         this.props.submit(values);
     }
 
-    loadFields(fields) {
+    loadFields(fields, object) {
+        
         
         return _.map(fields, (field, key) => {
             return (
@@ -88,6 +92,7 @@ class MyForm extends Component{
 
         let fields = {};
         if( this.props.fields){
+            console.log("meu objeto: ", this.props.object)
             console.log(this.props.fields)
             fields = this.props.fields;
         }
@@ -96,7 +101,7 @@ class MyForm extends Component{
 
         return(
                 <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                    {this.loadFields(fields)}
+                    {this.loadFields(fields, this.props.object)}
        
                     <button type="submit" className="btn btn-primary">Submit</button>
                     <Link to="/" className="btn btn-danger" >Cancel</Link>
@@ -131,23 +136,32 @@ function validate(values, props) {
     return errors
 }
 
-/* function mapStateToProps(state){
-    console.log("stateeeeeeeeeeeee: ", state )
-    return {
-        usersFields: state.usersFields
-    }
-} */
-
-export default reduxForm({
+/* export default reduxForm({
     validate,
     //this form property here you can really 
     //think of as being the name of the form
+    //initialValues: {username: this.props.object.username},
     form: 'UserNewForm' //this string has to be a unique form
 })(
     //Tirei o connect daqui porque vou fazer o submit no parent
     //connect(mapStateToProps, { createUser })(MyForm)
     MyForm
-);
+); */
+
+/*Tive que usar o compose para passar a props para dentro do reduxForm*/
+export default compose(
+    connect((state, props) => ({
+        initialValues: props.object
+    })),
+    reduxForm({
+        validate,
+        //this form property here you can really 
+        //think of as being the name of the form
+        //initialValues: {username: this.props.object.username},
+        enableReinitialize: true,
+        form: 'UserNewForm' //this string has to be a unique form
+    })
+)(MyForm);
 
 /* export default reduxForm({
     validate,

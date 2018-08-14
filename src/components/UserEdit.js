@@ -19,7 +19,7 @@ class UserEdit extends Component{
 
     componentDidMount() {
         this.props.fetchUserFields()
-        this.props.fetchUser('5b6af9e3d178c01842ebf011')
+        this.props.fetchUser(this.props.match.params.id)
     }
 
     getValidationState() {
@@ -61,13 +61,13 @@ class UserEdit extends Component{
         }
 
         let element = null;
-        if(this.props.usersFields)
+        if(this.props.usersFields && this.props.user)
         {
-            console.log("users fields: ", this.props.usersFields)
+            console.log("user: ", this.props.user)
             let fields = this.props.usersFields;
             delete fields['_id'];
             delete fields['__v'];
-            element = this.getForm(errors, fields, this.props.users)
+            element = this.getForm(errors, fields, this.props.user)
         }
 
         return(
