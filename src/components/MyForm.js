@@ -14,7 +14,6 @@ class MyForm extends Component{
     }
 
     renderField(field) {
-        console.log("objeto no meu form: ", field)
         const { meta: { touched, error } } = field;
         let classFeedback = '';
         let className = '';
@@ -24,7 +23,6 @@ class MyForm extends Component{
             //className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
             //classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
             if(field.required) {
-                console.log("meu field: ", field);
                 if(field.input.value){
                     className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
                     classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
@@ -104,7 +102,7 @@ class MyForm extends Component{
                     {this.loadFields(fields, this.props.object)}
        
                     <button type="submit" className="btn btn-primary">Submit</button>
-                    <Link to="/" className="btn btn-danger" >Cancel</Link>
+                    <Link to={`/${this.props.resource}`} className="btn btn-danger" >Cancel</Link>
                 </form>
         )
     }

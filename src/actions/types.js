@@ -1,5 +1,7 @@
 export const CREATE = "CREATE";
 export const CREATE_USER = "CREATE_USER";
+export const EDIT_USER = "EDIT_USER";
+export const REMOVE_USER = "REMOVE_USER";
 export const CREATE_USERS_ERROR = "CREATE_USERS_ERROR";
 export const FETCH_USER = "FETCH_USER";
 export const FETCH_USERS = "FETCH_USERS";

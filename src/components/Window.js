@@ -23,6 +23,10 @@ class Window extends Component{
         }
     }
 
+    remove(id){
+        alert('testnnnnnn')
+    }
+
     render(){
         return (
             <Panel bsStyle="default" className="mx-auto">

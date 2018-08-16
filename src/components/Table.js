@@ -37,9 +37,10 @@ class Table extends Component {
         }
 
         
-        this.onRowSelect = this.onRowSelect.bind(this)
+        this.onRowSelect = this.onRowSelect.bind(this);
         //this.redirectTo = this.redirectTo.bind(this)
         //this.showEditButton = this.showEditButton.bind(this)
+        this.removeItem=this.removeItem.bind(this);
     }
 
     componentDidMount(){
@@ -83,12 +84,14 @@ class Table extends Component {
     }
 
     removeItem() {
-        console.log("vai excluir o item")
+        console.log("vai excluir o item");
+        this.props.remove(selected);
+
     }
 
     showRemoveButton() {
         if(this.props.create)
-            return <Button bsStyle="danger" onClick={this.removeItem}>Excluir {this.props.name}</Button>
+            return <Button bsStyle="danger" /*onClick={this.removeItem}*/ onClick={this.removeItem} >Excluir {this.props.name}</Button>
     }
 
     onRowSelect(row, isSelected){

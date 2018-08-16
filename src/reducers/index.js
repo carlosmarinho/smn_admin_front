@@ -6,7 +6,6 @@ import UsersFields from './fieldReducer';
 import Locations from './locationReducer';
 
 export default combineReducers({
-    user: Users,
     users: Users,
     usersFields: UsersFields,
     locations: Locations,

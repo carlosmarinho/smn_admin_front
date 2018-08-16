@@ -51,7 +51,7 @@ class UserNew extends Component{
     }
 
     getForm(errors, fields) {
-        return (<MyForm errors={errors} fields={fields} onSubmit={this.submit.bind(this)} />)
+        return (<MyForm errors={errors} fields={fields} onSubmit={this.submit.bind(this)} resource="user" />)
     }
 
     render() {
