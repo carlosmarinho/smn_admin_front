@@ -13,6 +13,7 @@ export default function(state = null, action) {
             return action.payload.data;
         case FETCH_USERS:
             console.log("payload do fetch users: ", action.payload)
+            
             return action.payload.data;
         case CREATE:
             return action.payload;

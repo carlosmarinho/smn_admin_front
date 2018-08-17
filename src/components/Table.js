@@ -1,12 +1,13 @@
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, ButtonToolbar  } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory from 'react-bootstrap-table2-filter';  
+import MyModal from './MyModal'
 
 const pagination = paginationFactory({
     sizePerPageList: [ {
@@ -33,7 +34,8 @@ class Table extends Component {
         this.state = {
             columns: this.props.columns,
             selectedRows: [],
-            redirect: false
+            redirect: false,
+            lgShow: false
         }
 
         
@@ -85,11 +87,13 @@ class Table extends Component {
 
     removeItem() {
         console.log("vai excluir o item");
+        this.setState({ lgShow: true })
         this.props.remove(selected);
 
     }
 
     showRemoveButton() {
+        
         if(this.props.create)
             return <Button bsStyle="danger" /*onClick={this.removeItem}*/ onClick={this.removeItem} >Excluir {this.props.name}</Button>
     }
@@ -127,6 +131,7 @@ class Table extends Component {
         }
     }
 
+    
     showTable() {
         
         const selectRow = {
@@ -154,6 +159,15 @@ class Table extends Component {
         }
     }
 
+    showModal() {
+        let lgClose = () => this.setState({ lgShow: false });
+        let title = `Exclusão de ${this.props.name}`;
+        let subtitle = `Tem certeza que deseja excluir o(a) ${this.props.name}`;
+        return (
+            <MyModal show={this.state.lgShow} onHide={lgClose} title={title} subtitle={subtitle} />
+        );
+    }
+
     render() {
 
         if (this.state.redirect) {
@@ -162,11 +176,13 @@ class Table extends Component {
 
         return (
             <div>
-                
+                {this.showModal()}
                 {this.showTable()}
-                {this.showCreateButton()}
-                {this.showEditButton()}
-                {this.showRemoveButton()}
+                <ButtonToolbar>
+                    {this.showCreateButton()}
+                    {this.showEditButton()}
+                    {this.showRemoveButton()}
+                </ButtonToolbar>
             </div>
         )
     }
