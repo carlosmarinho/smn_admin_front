@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import React, { Component } from 'react';
@@ -86,10 +87,9 @@ class Table extends Component {
     }
 
     removeItem() {
-        console.log("vai excluir o item");
         this.setState({ lgShow: true })
         this.props.remove(selected);
-
+        selected = [];
     }
 
     showRemoveButton() {
@@ -118,8 +118,7 @@ class Table extends Component {
             console.log("unselect affterrr: ", selected)
         }
         //        this.setState({selectedRows})
-
-        
+   
         //alert("is selected: " + isSelected + ", " + rowStr);
     }
       
@@ -131,6 +130,10 @@ class Table extends Component {
         }
     }
 
+    showData() {
+        console.log(_.values(this.props.data))
+        return _.values(this.props.data);
+    }
     
     showTable() {
         
@@ -146,7 +149,7 @@ class Table extends Component {
             //console.log("data na tabela: ", this.props.data)
             return <BootstrapTable 
                 keyField={ this.props.keyField? this.props.keyField: '_id'} 
-                data={ this.props.data } 
+                data={ this.showData() } 
                 columns={ this.state.columns } 
                 pagination={ pagination }
                 filter={ filterFactory() }
@@ -163,9 +166,9 @@ class Table extends Component {
         let lgClose = () => this.setState({ lgShow: false });
         let title = `Exclusão de ${this.props.name}`;
         let subtitle = `Tem certeza que deseja excluir o(a) ${this.props.name}`;
-        return (
+        /*return (
             <MyModal show={this.state.lgShow} onHide={lgClose} title={title} subtitle={subtitle} />
-        );
+        );*/
     }
 
     render() {

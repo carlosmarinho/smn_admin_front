@@ -29,8 +29,9 @@ class User extends Component {
         if(nextProps.users){
             if(nextProps.users.users)
             {
-                //let users = _.mapKeys(nextProps.users.users, '_id')
-                this.setState({users: nextProps.users.users});
+                let users = _.mapKeys(nextProps.users.users, '_id')
+                this.setState({users: users});
+                //this.setState({users: nextProps.users.users});
             }
         }
     }
@@ -51,19 +52,24 @@ class User extends Component {
     }
 
     remove(ids) {
-        console.log("ids removidos: ", ids);
+        this.props.removeUser(ids)
+        
+        let users = this.state.users;
         if( ids.length == 1){
-            let users = this.state.users.map( (e, i) => {
-                if(e._id != ids[0])
-                {
-                    return e;
-                }
-               
-            }) 
-            this.setState({users:users});
+            //let users = this.state.users;
+            users = _.omit(users, ids[0]);
+             
+        }
+        else{
+            ids.map(id => {
+                users = _.omit(users, id);
+            })
+            
         }
 
-        this.props.removeUser(ids)
+
+
+        this.setState({users:users});
     }
 
     renderUsers() {
@@ -95,7 +101,6 @@ class User extends Component {
               };
 
               //this.setState({users: this.props.users.users})
-              console.log
             return <Table data={this.state.users} columns={columns1} name="Usuário" create resource="user" remove={this.remove} />
             //return <BootstrapTable keyField='id' data={ this.props.users } columns={ columns } />
         }
@@ -107,20 +112,30 @@ class User extends Component {
         let errors = '';
         let msg_success = '';
 
-        if(this.props.users)
-        {
-            //if(this.props.users.users)
-            {
-            //    this.setState({users: this.props.users.users});
-                console.log('vai alterar o estado do setState', this.state.users)
-            }
+        if(this.props.match.params.message_success)
+            msg_success = this.props.match.params.message_success;
+        if(this.props.match.params.message_errors)
+            errors = this.props.match.params.message_errors;
 
+        if(this.props.users && this.props.users.data)
+        {
+            console.log('vai alterar o estado do setState', this.props.users)
+            if(this.props.users.data.action){
+                //msg_success = this.props.users.data.return[0].message
+                console.log("antes do return map")        
+                const msg = this.props.users.data.return.map(message => {
+                    console.log("dentro do console.map lllllll");
+                    return <li key={message.id}>{message.message}</li>
+                })
+
+                msg_success =<ul>{msg}</ul>;
+                //msg_success = ["meu teste 123", "caramba esse é legal"];
+            }
+         
         }
     
         //console.log("aui no render do user: ", this.props.match.params);
 
-        if(this.props.match.params.message_success)
-            msg_success = this.props.match.params.message_success;
 
         return (
      
