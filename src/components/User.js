@@ -138,7 +138,6 @@ class User extends Component {
 
 
         return (
-     
             <Window name="Lista de Usuários" element={this.renderUsers()} msgError={errors} msgSuccess={msg_success} />
         );
     }
