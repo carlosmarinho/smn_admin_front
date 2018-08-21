@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import axios from 'axios';
 import { CREATE_USER, EDIT_USER, REMOVE_USER } from "./types";
 import { FETCH_USER, FETCH_USERS, FETCH_USER_FIELDS } from "./types";
@@ -31,7 +32,20 @@ export async function editUser(id, values, callback) {
         //callback(msg.message);    
     }
     catch(err){
-        msg = {"error": err.response.data}
+        console.log("caiu aqui no error: ", typeof(err.response.data));
+        if( typeof(err.response.data) === "object"  ){
+            msg = _.map(err.response.data, erro => {
+                let ar = [];
+                console.log("paatttthhhhh::::: ", erro.path)
+                ar[erro.path] = erro.message
+                return ar;
+            })
+            console.log("o retorno::::: ", msg);
+            msg = {obj: values, error: msg};
+        }
+        else {
+            msg = {obj: values, error: err.response.data}
+        }
     }
 
     return {

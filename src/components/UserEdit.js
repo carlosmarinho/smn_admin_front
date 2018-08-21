@@ -44,9 +44,9 @@ class UserEdit extends Component{
     render() {
         let errors = null;
         let msg_success = null;
-        if(this.props.users){
-            console.log("propppppppppppssssss.userrrr: ", this.props.users)
-            console.log("userrrr: ", this.props.users)
+        let user = null;
+        let fields = null;
+        if(this.props.users && this.props.users.message){
             msg_success = this.props.users.message;
         }
 
@@ -54,22 +54,28 @@ class UserEdit extends Component{
             errors = this.props.users.error
         }
 
-        let element = null;
-        if(this.props.usersFields && this.props.users)
-        {
-            let user = this.props.users
-            
-
-            if(this.props.users.message)
+        if(this.props.users) {
+            if(this.props.users.obj){
                 user = this.props.users.obj
-            
-                
+            }
+            else{
+                user = this.props.users
+            }
+        }
 
-            let fields = this.props.usersFields;
+
+        
+        let element = null;
+        if(this.props.usersFields )
+        {
+            console.log("obj: ", this.props.users)
+        
+            fields = this.props.usersFields;
             delete fields['_id'];
             delete fields['__v'];
-            element = this.getForm(errors, fields, user)
         }
+        
+        element = this.getForm(errors, fields, user)
 
         return(
             <div>

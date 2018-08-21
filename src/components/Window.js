@@ -1,3 +1,4 @@
+import _ from 'lodash'; 
 import React, { Component } from 'react';
 import { Panel, Alert } from 'react-bootstrap'
 
@@ -9,9 +10,23 @@ class Window extends Component{
 
     msgError(){
         if(this.props.msgError){
-            return(
-                <Alert bsStyle="danger">{this.props.msgError}</Alert>
-            )
+            if(typeof(this.props.msgError) === 'object') {
+                let error = this.props.msgError.map(erro => {
+                    if(typeof(erro) === 'object') {
+                        return <li>{_.values(erro)}</li>
+                    }
+                    else {
+                        return <li>{erro}</li>;
+                    }
+                })
+                console.log("error no window: ", error);
+                return <Alert bsStyle="danger">{error}</Alert>
+            }
+            else {
+                return(
+                    <Alert bsStyle="danger">{this.props.msgError}</Alert>
+                )
+            }
         }
     }
 

@@ -4,22 +4,35 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Link } from 'react-router-dom';
+import { Button, ButtonToolbar  } from 'react-bootstrap';
+
 
 class MyForm extends Component{
 
     constructor(props, context) {
         super(props, context);
     
-   
+        this.renderField = this.renderField.bind(this);
     }
 
     renderField(field) {
         const { meta: { touched, error } } = field;
         let classFeedback = '';
         let className = '';
-        
-        if(touched) {
-            
+
+        if(this.props.errors){
+            this.props.errors.map(erro => {
+                if(erro[field.input.name]) {
+                    field.meta.error = erro[field.input.name];
+                    classFeedback = `glyphicon glyphicon-remove form-control-feedback`
+                    className = `form-group has-error`;
+                    console.log("erro no map: ", erro[field.input.name], " --- ", field.name);
+                }
+            } )
+        }
+
+        if(touched && className == '') {
+            //console.log("foi touched: ", field);
             //className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
             //classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
             if(field.required) {
@@ -90,8 +103,6 @@ class MyForm extends Component{
 
         let fields = {};
         if( this.props.fields){
-            console.log("meu objeto: ", this.props.object)
-            console.log(this.props.fields)
             fields = this.props.fields;
         }
 
@@ -100,9 +111,10 @@ class MyForm extends Component{
         return(
                 <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
                     {this.loadFields(fields, this.props.object)}
-       
-                    <button type="submit" className="btn btn-primary">Submit</button>
-                    <Link to={`/${this.props.resource}`} className="btn btn-danger" >Cancel</Link>
+                    <ButtonToolbar>
+                        <Button type="submit" className="btn btn-primary">Submit</Button>
+                        <Link to={`/${this.props.resource}`} className="btn btn-danger" >Voltar</Link>
+                    </ButtonToolbar>
                 </form>
         )
     }
@@ -110,7 +122,7 @@ class MyForm extends Component{
 
 function validate(values, props) {
     
-    //console.log("chamou o validate se liga nos values: ", props.fields)
+    console.log("chamou o validate se liga nos values: ", values)
 
     let errors = {};
     
@@ -118,9 +130,21 @@ function validate(values, props) {
     //console.log("meus campinhos venham cá: ", props.fields)
 
     _.forEach(props.fields, (field, key) => {
-        console.log("a chave: ---", values[key], "---", field.isRequired)
-        if(field.isRequired && !values[key])
-            errors[key] = `Informe o campo ${key}`;
+        //if(field.isRequired && !values[key])
+          //  errors[key] = `Informe o campo ${key}`;
+
+       _.map(field.options, (option, key1) => {
+           if(key1 == 'required') {
+               errors[key] = validateRequired(key, option)
+           } else if(key1 == 'min') {
+                errors[key] = validateMin(key, option, values[key])
+           } else if(key1 == 'max') {
+                errors[key] = validateMax(key, option, values[key])
+           }
+
+        })
+
+        console.log("errors: ", errors);
 
         return errors
     }) 
@@ -132,6 +156,39 @@ function validate(values, props) {
     //If errors is empty, the form is fine to submit
     //If errors has *any* properties, redux form assumes form is invalid
     return errors
+}
+
+function validateRequired(campo, value) {
+    if(value == true || value === 'true' )
+        return `O campo ${campo} é obrigatório!!!`;
+    else if(value !== false)
+        return value
+    else
+        return
+}
+
+function validateMin(campo, valueRequired, value) {
+    console.log('no validateMin', value )
+    if(typeof(valueRequired) === 'object'){
+        console.log(valueRequired[0], " ----- ", value)
+        if(value < valueRequired[0] )
+            return valueRequired[1];
+    }
+    else {
+
+    }
+}
+
+function validateMax(campo, valueRequired, value) {
+    console.log('no validateMax', value )
+    if(typeof(valueRequired) === 'object'){
+        console.log(valueRequired[0], " ----- ", value)
+        if(value > valueRequired[0] )
+            return valueRequired[1];
+    }
+    else {
+
+    }
 }
 
 /* export default reduxForm({
