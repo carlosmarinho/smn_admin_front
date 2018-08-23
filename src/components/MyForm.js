@@ -16,9 +16,14 @@ class MyForm extends Component{
     }
 
     renderField(field) {
-        const { meta: { touched, error } } = field;
+        const { input, type, meta: { touched, error, warning } } = field
+        if(field.isImage){
+            delete input.value
+        }
+        //const { meta: { touched, error } } = field;
         let classFeedback = '';
         let className = '';
+
 
         if(this.props.errors){
             this.props.errors.map(erro => {
@@ -53,11 +58,13 @@ class MyForm extends Component{
         
         //glyphicon-warning-sign
         return (
+            
             <div className={className}>
+            
                 <label className="control-label">{field.label}</label>
                 <input
                     className="form-control"
-                    type="text"
+                    type={type}
                     required={field.required}
                     {...field.input}
                 />
@@ -87,29 +94,40 @@ class MyForm extends Component{
         
         
         return _.map(fields, (field, key) => {
+            let type = "text"
+
+            if(field.options.image)
+                type = "file"
+            
             return (
                 <Field
-                key={key}
-                label={_.capitalize(key).replace('_'," ")}
-                name={key}
-                component={this.renderField}
-                required={field.isRequired}
+                    type={type}
+                    key={key}
+                    label={_.capitalize(key).replace('_'," ")}
+                    name={key}
+                    component={this.renderField}
+                    required={field.isRequired}
+                    isImage={field.options.image}
                 />     
             )
         })
     }
     
+    
+
     render() {
 
         let fields = {};
         if( this.props.fields){
             fields = this.props.fields;
         }
+        
 
         const { handleSubmit } = this.props;
 
         return(
                 <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+                    
                     {this.loadFields(fields, this.props.object)}
                     <ButtonToolbar>
                         <Button type="submit" className="btn btn-primary">Submit</Button>
@@ -122,8 +140,6 @@ class MyForm extends Component{
 
 function validate(values, props) {
     
-    console.log("chamou o validate se liga nos values: ", values)
-
     let errors = {};
     
 
@@ -135,7 +151,7 @@ function validate(values, props) {
 
        _.map(field.options, (option, key1) => {
            if(key1 == 'required') {
-               errors[key] = validateRequired(key, option)
+               errors[key] = validateRequired(key, option, values[key])
            } else if(key1 == 'min') {
                 errors[key] = validateMin(key, option, values[key])
            } else if(key1 == 'max') {
@@ -144,7 +160,7 @@ function validate(values, props) {
 
         })
 
-        console.log("errors: ", errors);
+        //console.log("errors: ", errors);
 
         return errors
     }) 
@@ -158,19 +174,23 @@ function validate(values, props) {
     return errors
 }
 
-function validateRequired(campo, value) {
-    if(value == true || value === 'true' )
+
+function validateRequired(campo, value, inputValue) {
+    console.log("campo: ", campo, " ---- ", 'Value: ', value, " ----- ", inputValue)
+    if((value == true || value === 'true') && inputValue === '' ){
         return `O campo ${campo} é obrigatório!!!`;
-    else if(value !== false)
+    }
+    else if(value !== false && inputValue === ''){
         return value
+    }
     else
         return
 }
 
 function validateMin(campo, valueRequired, value) {
-    console.log('no validateMin', value )
+    //console.log('no validateMin', value )
     if(typeof(valueRequired) === 'object'){
-        console.log(valueRequired[0], " ----- ", value)
+        //console.log(valueRequired[0], " ----- ", value)
         if(value < valueRequired[0] )
             return valueRequired[1];
     }
@@ -180,9 +200,9 @@ function validateMin(campo, valueRequired, value) {
 }
 
 function validateMax(campo, valueRequired, value) {
-    console.log('no validateMax', value )
+    //console.log('no validateMax', value )
     if(typeof(valueRequired) === 'object'){
-        console.log(valueRequired[0], " ----- ", value)
+        //console.log(valueRequired[0], " ----- ", value)
         if(value > valueRequired[0] )
             return valueRequired[1];
     }
