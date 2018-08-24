@@ -94,17 +94,19 @@ class MyForm extends Component{
         
         
         return _.map(fields, (field, key) => {
-            let type = "text"
-
-            if(field.options.image)
-                type = "file"
+            let type = "text";
+            let name = key;
+            if(field.options.image) {
+                name = key + '_img'
+                type = "file";
+            }
             
             return (
                 <Field
                     type={type}
                     key={key}
                     label={_.capitalize(key).replace('_'," ")}
-                    name={key}
+                    name={name}
                     component={this.renderField}
                     required={field.isRequired}
                     isImage={field.options.image}
@@ -127,7 +129,17 @@ class MyForm extends Component{
 
         return(
                 <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                    
+
+                    <Field
+                        type="text"
+                        key={this.props.resource}
+                        name="resource"
+                        component={this.renderField}
+              
+              
+                    />  
+
+
                     {this.loadFields(fields, this.props.object)}
                     <ButtonToolbar>
                         <Button type="submit" className="btn btn-primary">Submit</Button>
@@ -176,11 +188,10 @@ function validate(values, props) {
 
 
 function validateRequired(campo, value, inputValue) {
-    console.log("campo: ", campo, " ---- ", 'Value: ', value, " ----- ", inputValue)
-    if((value == true || value === 'true') && inputValue === '' ){
+    if((value == true || value === 'true') && (inputValue === '' || inputValue === undefined) ){
         return `O campo ${campo} é obrigatório!!!`;
     }
-    else if(value !== false && inputValue === ''){
+    else if(value !== false && (inputValue === '' || inputValue === undefined) ){
         return value
     }
     else
@@ -233,6 +244,7 @@ export default compose(
         //this form property here you can really 
         //think of as being the name of the form
         //initialValues: {username: this.props.object.username},
+        
         enableReinitialize: true,
         form: 'UserNewForm' //this string has to be a unique form
     })

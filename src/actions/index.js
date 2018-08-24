@@ -7,9 +7,26 @@ import { FETCH_LOCATIONS } from "./types";
 export async function createUser(values, callback) {
     let request = null;
     let msg = null;
+    console.log("valus na action do create", values);
+
+    
+        let formData = new FormData();
+        _.map(values, (value, key) => {
+            console.log(key, " === ", value)
+            if(value instanceof FileList){
+                formData.append('files', value[0]);
+            }
+            else
+                formData.append(key, value);
+        })
+        
+        let config = { headers: { 'Content-Type': 'multipart/form-data' } };
+        
+        console.log("form: ", formData)
+        //config = null;
         
     try{
-        request = await axios.post("http://localhost:3001/users/", values)
+        request = await axios.post("http://localhost:3001/users/", formData, config)
         msg = {"msg_success": request.data}
     }
     catch(err){

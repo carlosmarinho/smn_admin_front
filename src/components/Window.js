@@ -10,7 +10,7 @@ class Window extends Component{
 
     msgError(){
         if(this.props.msgError){
-            if(typeof(this.props.msgError) === 'object') {
+            if( this.props.msgError instanceof Array) {
                 let error = this.props.msgError.map(erro => {
                     if(typeof(erro) === 'object') {
                         return <li>{_.values(erro)}</li>
@@ -22,7 +22,26 @@ class Window extends Component{
                 console.log("error no window: ", error);
                 return <Alert bsStyle="danger">{error}</Alert>
             }
+            else if( this.props.msgError instanceof Object) {
+                let error = null;
+                if(this.props.msgError.message){
+                    error = this.props.msgError.message;
+                }
+                else {
+                     error = _.map(this.props.msgError,  (erro) => {
+                        if(typeof(erro) === 'object') {
+                            return <li>{_.values(erro.message)}</li>
+                        }
+                        else {
+                            return <li>{erro}</li>;
+                        }
+                    })
+                }
+                console.log("error no window: ", error);
+                return <Alert bsStyle="danger">{error}</Alert>
+            }
             else {
+                console.log("aqui no else mesmo")
                 return(
                     <Alert bsStyle="danger">{this.props.msgError}</Alert>
                 )
