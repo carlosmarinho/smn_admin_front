@@ -24,54 +24,66 @@ class MyForm extends Component{
         let classFeedback = '';
         let className = '';
 
+        if(type != "hidden") {
 
-        if(this.props.errors){
-            this.props.errors.map(erro => {
-                if(erro[field.input.name]) {
-                    field.meta.error = erro[field.input.name];
-                    classFeedback = `glyphicon glyphicon-remove form-control-feedback`
-                    className = `form-group has-error`;
-                    console.log("erro no map: ", erro[field.input.name], " --- ", field.name);
+            if(this.props.errors){
+                this.props.errors.map(erro => {
+                    if(erro[field.input.name]) {
+                        field.meta.error = erro[field.input.name];
+                        classFeedback = `glyphicon glyphicon-remove form-control-feedback`
+                        className = `form-group has-error`;
+                        console.log("erro no map: ", erro[field.input.name], " --- ", field.name);
+                    }
+                } )
+            }
+    
+            if(touched && className == '') {
+                //console.log("foi touched: ", field);
+                //className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
+                //classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
+                if(field.required) {
+                    if(field.input.value){
+                        className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
+                        classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
+                    }
+                    else{
+                        className = `form-group ${ error ? 'has-error' : ''} has-feedback`;
+                        classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : ''} form-control-feedback`
+                    }
                 }
-            } )
-        }
-
-        if(touched && className == '') {
-            //console.log("foi touched: ", field);
-            //className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
-            //classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
-            if(field.required) {
-                if(field.input.value){
+                else{
                     className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
                     classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
                 }
-                else{
-                    className = `form-group ${ error ? 'has-error' : ''} has-feedback`;
-                    classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : ''} form-control-feedback`
-                }
             }
-            else{
-                className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
-                classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
-            }
+            
+            return (
+                
+                <div className={className}>
+                
+                    <label className="control-label">{field.label}</label>
+                    <input
+                        className="form-control"
+                        type={type}
+                        required={field.required}
+                        {...field.input}
+                    />
+                    <span className={classFeedback} aria-hidden="true"></span>
+                    <span className="help-block">{field.meta.touched ? field.meta.error : ''}</span>
+                </div>
+            )
+        }
+        else {
+            return(
+            <input
+                className="form-control"
+                type={type}
+                required={field.required}
+                {...field.input}
+            /> 
+            )
         }
         
-        //glyphicon-warning-sign
-        return (
-            
-            <div className={className}>
-            
-                <label className="control-label">{field.label}</label>
-                <input
-                    className="form-control"
-                    type={type}
-                    required={field.required}
-                    {...field.input}
-                />
-                <span className={classFeedback} aria-hidden="true"></span>
-                <span className="help-block">{field.meta.touched ? field.meta.error : ''}</span>
-            </div>
-        )
     }
 
 
@@ -131,12 +143,10 @@ class MyForm extends Component{
                 <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
 
                     <Field
-                        type="text"
+                        type="hidden"
                         key={this.props.resource}
                         name="resource"
                         component={this.renderField}
-              
-              
                     />  
 
 
