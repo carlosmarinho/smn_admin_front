@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 //import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -51,7 +52,18 @@ class UserNew extends Component{
     }
 
     getForm(errors, fields) {
-        return (<MyForm errors={errors} fields={fields} object={{resource: 'user'}} onSubmit={this.submit.bind(this)} resource="user" />)
+        let object = {resource: 'user'};
+        if(this.props.users && this.props.users.msg_success){
+            _.map( this.props.usersFields, field => {
+
+                if(field.options.image)
+                    object[field.path + '_img'] = '';
+                else
+                    object[field.path] = ''
+            })
+        }
+        console.log("o objeto: ", object);
+        return (<MyForm errors={errors} fields={fields} object={object} onSubmit={this.submit.bind(this)} resource="user" />)
     }
 
     render() {
@@ -68,7 +80,6 @@ class UserNew extends Component{
         let element = null;
         if(this.props.usersFields)
         {
-            console.log("users fields: ", this.props.usersFields)
             let fields = this.props.usersFields;
             delete fields['_id'];
             delete fields['__v'];

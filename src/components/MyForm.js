@@ -15,6 +15,17 @@ class MyForm extends Component{
         this.renderField = this.renderField.bind(this);
     }
 
+    imagePreview(field){
+        if(field.isImage)
+        {
+            return(
+                <div className="imgPreview">
+                    <img src="" />
+                </div>
+            )
+        }
+    }
+
     renderField(field) {
         const { input, type, meta: { touched, error, warning } } = field
         if(field.isImage){
@@ -27,14 +38,16 @@ class MyForm extends Component{
         if(type != "hidden") {
 
             if(this.props.errors){
-                this.props.errors.map(erro => {
-                    if(erro[field.input.name]) {
-                        field.meta.error = erro[field.input.name];
-                        classFeedback = `glyphicon glyphicon-remove form-control-feedback`
-                        className = `form-group has-error`;
-                        console.log("erro no map: ", erro[field.input.name], " --- ", field.name);
-                    }
-                } )
+                if(this.props.errors instanceof Array) {
+                    this.props.errors.map(erro => {
+                        if(erro[field.input.name]) {
+                            field.meta.error = erro[field.input.name];
+                            classFeedback = `glyphicon glyphicon-remove form-control-feedback`
+                            className = `form-group has-error`;
+                            console.log("erro no map: ", erro[field.input.name], " --- ", field.name);
+                        }
+                    } )
+                }
             }
     
             if(touched && className == '') {
@@ -60,7 +73,8 @@ class MyForm extends Component{
             return (
                 
                 <div className={className}>
-                
+                    {this.imagePreview(field)}
+                    
                     <label className="control-label">{field.label}</label>
                     <input
                         className="form-control"
@@ -70,6 +84,7 @@ class MyForm extends Component{
                     />
                     <span className={classFeedback} aria-hidden="true"></span>
                     <span className="help-block">{field.meta.touched ? field.meta.error : ''}</span>
+                    
                 </div>
             )
         }
