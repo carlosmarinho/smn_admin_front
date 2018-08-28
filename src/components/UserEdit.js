@@ -67,9 +67,7 @@ class UserEdit extends Component{
         
         let element = null;
         if(this.props.usersFields )
-        {
-            console.log("obj: ", this.props.users)
-        
+        {        
             fields = this.props.usersFields;
             delete fields['_id'];
             delete fields['__v'];
