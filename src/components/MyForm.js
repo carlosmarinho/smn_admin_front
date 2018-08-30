@@ -17,16 +17,19 @@ class MyForm extends Component{
     }
 
     imagePreview(field, resource){
-        console.log("resource: ", resource);
-        let id = "1";
+        
         if(field.isImage && field._id != 0)
         {
-            //console.log('url no image preview::::: ', this.props.object);
-            return(
-                <div className="imgPreview">
-                    <img src={`http://localhost:3001/image/${resource}/${field._id}`} />
-                </div>
-            )
+            let fieldname = field.input.name.replace('_img','')
+            
+            if(this.props.object && this.props.object[fieldname] ){
+                //console.log('url no image preview::::: ', this.props.object);
+                return(
+                    <div className="imgPreview">
+                        <img src={`http://localhost:3001/image/${resource}/${fieldname}/${field._id}`}  />
+                    </div>
+                )
+            }
         }
     }
 
@@ -39,7 +42,6 @@ class MyForm extends Component{
         let classFeedback = '';
         let className = '';
 
-        console.log("object -------id: ", this.props.object);
 
         if(type != "hidden") {
 
@@ -79,7 +81,7 @@ class MyForm extends Component{
             return (
                 
                 <div className={className}>
-                    {this.imagePreview(field, this.props.resource, this.props.object)}
+                    
                     
                     <label className="control-label">{field.label}</label>
                     <input
@@ -90,6 +92,7 @@ class MyForm extends Component{
                     />
                     <span className={classFeedback} aria-hidden="true"></span>
                     <span className="help-block">{field.meta.touched ? field.meta.error : ''}</span>
+                    {this.imagePreview(field, this.props.resource, this.props.object)}
                     
                 </div>
             )
@@ -133,7 +136,7 @@ class MyForm extends Component{
             let type = "text";
             let name = key;
             if(field.options.image) {
-                name = key + '_img'
+                //name = key + '_img'
                 type = "file";
             }
             

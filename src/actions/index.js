@@ -14,10 +14,13 @@ export async function createUser(values, callback) {
         _.map(values, (value, key) => {
             console.log(key, " === ", value)
             if(value instanceof FileList){
+                formData.append(key, value[0]['name']);
                 formData.append('files', value[0]);
             }
-            else
+            else {
+
                 formData.append(key, value);
+            }
         })
         
         let config = { headers: { 'Content-Type': 'multipart/form-data' } };
@@ -39,25 +42,41 @@ export async function createUser(values, callback) {
     }
 }
 
+
 export async function editUser(id, values, callback) {
     let request = null;
     let msg = null;
+
+    let formData = new FormData();
+    _.map(values, (value, key) => {
+        console.log(key, " --- ", value);
+        if(value instanceof FileList)
+        {
+            formData.append(key, value[0].name);
+            formData.append('files', value[0]);
+        }
+        else {
+            formData.append(key, value);
+        }
+    })
+
+    
+    console.log("formData: ", formData)
+
+    let config = { headers: { 'Content-Type': 'multipart/form-data' } };
+
     try{
-        request = await axios.put(`http://localhost:3001/users/${id}`, values)
-        console.log("request aqui vindo no editar q interessante: ", request.data);
+        request = await axios.put(`http://localhost:3001/users/${id}`, formData, config)
         msg = request.data;
-        //callback(msg.message);    
+
     }
     catch(err){
-        console.log("caiu aqui no error: ", typeof(err.response.data));
         if( typeof(err.response.data) === "object"  ){
             msg = _.map(err.response.data, erro => {
                 let ar = [];
-                console.log("paatttthhhhh::::: ", erro.path)
                 ar[erro.path] = erro.message
                 return ar;
             })
-            console.log("o retorno::::: ", msg);
             msg = {obj: values, error: msg};
         }
         else {
@@ -71,6 +90,35 @@ export async function editUser(id, values, callback) {
     }
 
 }
+
+/* export async function editUser(id, values, callback) {
+    let request = null;
+    let msg = null;
+    try{
+        request = await axios.put(`http://localhost:3001/users/${id}`, values)
+        msg = request.data;
+
+    }
+    catch(err){
+        if( typeof(err.response.data) === "object"  ){
+            msg = _.map(err.response.data, erro => {
+                let ar = [];
+                ar[erro.path] = erro.message
+                return ar;
+            })
+            msg = {obj: values, error: msg};
+        }
+        else {
+            msg = {obj: values, error: err.response.data}
+        }
+    }
+
+    return {
+        type: EDIT_USER,
+        payload: msg
+    }
+
+} */
 
 export const removeUser = (ids) => {
 

@@ -1,3 +1,4 @@
+import _ from 'lodash'; 
 import React, { Component } from 'react';
 //import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -15,6 +16,7 @@ class UserEdit extends Component{
     
         this.state = {usersFields: ''}
 
+        //this.submit = this.submit.bind(this);
     }
 
     componentDidMount() {
@@ -33,11 +35,30 @@ class UserEdit extends Component{
 
         
     submit(values) {
+
+        console.log('values do submit: ', values );
+        console.log("meus props: ", this.props);
+
+        //Workaround para caso o usuario não digite nenhuma imagem ele não pegue os valores das imagens padrões
+        _.map(this.props.usersFields, field => {
+            if(field.options.image){
+                if(values[field.path] == this.props.users[field.path])
+                    delete values[field.path];
+            }
+        })
+        
+        console.log('values depois do submit: ', values );
+
         this.props.editUser(this.props.match.params.id, values, (msg) => this.props.history.push(`/user/${msg}`))
     }
 
     
     getForm(errors, fields, object) {
+        _.merge(object, {resource: 'user'});
+        
+
+        console.log("object no merge: ", object);
+
         return (<MyForm errors={errors} fields={fields} object={object} onSubmit={this.submit.bind(this)} resource="user" />)
     }
 
@@ -64,7 +85,6 @@ class UserEdit extends Component{
         }
 
 
-        
         let element = null;
         if(this.props.usersFields )
         {        

@@ -41,6 +41,7 @@ class Table extends Component {
 
         
         this.onRowSelect = this.onRowSelect.bind(this);
+        this.onSelectAll = this.onSelectAll.bind(this);
         //this.redirectTo = this.redirectTo.bind(this)
         //this.showEditButton = this.showEditButton.bind(this)
         this.removeItem=this.removeItem.bind(this);
@@ -99,12 +100,7 @@ class Table extends Component {
     }
 
     onRowSelect(row, isSelected){
-        /* let rowStr = "";
-        
-        for(var prop in row){
-          rowStr+=prop+": '"+row[prop]+"' ";
-        } */
-        //let selected = {}
+
         if(isSelected){
             //selected = this.state.selectedRows;
             console.log("beforeeeeee: ", selected)
@@ -113,7 +109,8 @@ class Table extends Component {
         }
         else{
             //selected = this.state.selectedRows;
-            console.log("unselect beforeeeeee: ", selected)
+            
+            console.log("não está selecionado vamos ver: unselect beforeeeeee: ", selected)
             selected = selected.filter(item => item !== row['_id'])
             console.log("unselect affterrr: ", selected)
         }
@@ -123,11 +120,16 @@ class Table extends Component {
     }
       
     onSelectAll(isSelected, currentDisplayAndSelectedData){
-        alert("is select all: " + isSelected);
-        alert("Current display and selected data: ");
-        for(let i=0;i<currentDisplayAndSelectedData.length;i++){
-            alert(currentDisplayAndSelectedData[i]);
+        console.log("Current display and selected data: ", currentDisplayAndSelectedData.length);
+        if(isSelected){
+            for(let i=0;i<currentDisplayAndSelectedData.length;i++){
+                this.onRowSelect(currentDisplayAndSelectedData[i], isSelected);
+            }
         }
+        else{
+            selected = [];
+        }
+        //console.log("selected: ", selected);
     }
 
     showData() {
@@ -141,7 +143,8 @@ class Table extends Component {
             mode: 'checkbox',
             clickToSelect: true,
             style: { background: '#ccccff' },
-            onSelect: this.onRowSelect
+            onSelect: this.onRowSelect,
+            onSelectAll:this.onSelectAll
         };
 
 
