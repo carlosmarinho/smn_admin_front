@@ -149,8 +149,9 @@ class Table extends Component {
 
     createColumns() {
         let fields = this.state.columns;
+        console.log("Meus fields: ",fields);
         return _.map(fields, (field, key) => {
-            console.log("o field: ", field);
+            console.log("o field: ", field, " --- ", key);
             let column = {
                 dataField: key,
                 text: _.capitalize(key).replace('_'," "),
@@ -158,7 +159,7 @@ class Table extends Component {
                 hidden: key=='_id' || key=='__v'? true: false,
                 formatter: (field.options.image)? this.showImage: ''
             }
-            console.log("collumn: ", column);
+            //console.log("collumn: ", column);
             return column
         })
 

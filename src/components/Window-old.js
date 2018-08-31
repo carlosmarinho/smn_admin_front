@@ -1,7 +1,6 @@
 import _ from 'lodash'; 
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
-import { Alert } from 'react-bootstrap'
+import { Panel, Alert } from 'react-bootstrap'
 
 class Window extends Component{
 
@@ -64,23 +63,16 @@ class Window extends Component{
 
     render(){
         return (
-            <div className="animated fadeIn">
-                <Row>
-                <Col xl={12}>
-                    <Card>
-                    <CardHeader>
-                        <i className="fa fa-align-justify"></i> Users <small className="text-muted">example</small>
-                    </CardHeader>
-                    <CardBody>
-                        {this.msgError()}
-                        {this.msgSuccess()}
-                        {this.props.element}
-                    </CardBody>
-                    </Card>
-                </Col>
-                </Row>
-            
-            </div>
+            <Panel bsStyle="default" className="mx-auto">
+                <Panel.Heading>
+                    <Panel.Title componentClass="h3">{this.props.name}</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body className="">
+                    {this.msgError()}
+                    {this.msgSuccess()}
+                    {this.props.element}
+                </Panel.Body>
+            </Panel>
         );
     }
 }
