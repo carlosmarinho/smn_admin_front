@@ -16,6 +16,7 @@ class User extends Component {
 
         this.state = {users: []}
         this.remove = this.remove.bind(this);
+        
     }
 
     componentDidMount() {
@@ -35,6 +36,8 @@ class User extends Component {
             }
         }
     }
+
+    
 
     createColumns(fields) {
         return _.map(fields, (field, key) => {
@@ -101,7 +104,7 @@ class User extends Component {
               };
 
               //this.setState({users: this.props.users.users})
-            return <Table data={this.state.users} columns={columns1} name="Usuário" create resource="user" remove={this.remove} />
+            return <Table data={this.state.users} columns={this.props.usersFields} name="Usuário" create resource="user" remove={this.remove} />
             //return <BootstrapTable keyField='id' data={ this.props.users } columns={ columns } />
         }
         return <div>Carregando Usuários ...</div>;

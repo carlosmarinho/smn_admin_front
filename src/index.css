@@ -22,3 +22,18 @@ body {
       height: 150px;
       margin-bottom:20px;
   }
+
+  .imgPreviewTable{
+    text-align: center
+  }
+
+  .imgPreviewTable img{
+    width: 30px;
+    height: 30px;
+  }
+
+  .table > tbody > tr > td {
+    vertical-align: middle;
+    padding: 5px;
+  }
+

@@ -8,6 +8,7 @@ import { Redirect } from 'react-router';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory from 'react-bootstrap-table2-filter';  
+import querystring from 'query-string';
 import MyModal from './MyModal'
 
 const pagination = paginationFactory({
@@ -45,6 +46,7 @@ class Table extends Component {
         //this.redirectTo = this.redirectTo.bind(this)
         //this.showEditButton = this.showEditButton.bind(this)
         this.removeItem=this.removeItem.bind(this);
+        //this.createColumns=this.createColumns.bind(this);
     }
 
     componentDidMount(){
@@ -109,14 +111,9 @@ class Table extends Component {
         }
         else{
             //selected = this.state.selectedRows;
-            
-            console.log("não está selecionado vamos ver: unselect beforeeeeee: ", selected)
             selected = selected.filter(item => item !== row['_id'])
-            console.log("unselect affterrr: ", selected)
         }
-        //        this.setState({selectedRows})
-   
-        //alert("is selected: " + isSelected + ", " + rowStr);
+
     }
       
     onSelectAll(isSelected, currentDisplayAndSelectedData){
@@ -133,10 +130,41 @@ class Table extends Component {
     }
 
     showData() {
-        console.log(_.values(this.props.data))
         return _.values(this.props.data);
     }
     
+    showImage(cell, row, rowIndex,) {
+        console.log("celula: ", cell)
+        if(cell) 
+        {
+            return (
+                <div className="imgPreviewTable">
+                    <Link to={`/user/edit/${row._id}`}><img src={`http://localhost:3001/image/path/${encodeURIComponent(JSON.parse(cell).path)}`}  /></Link>
+                </div>
+            ) 
+        }
+        //return "text"
+
+    }
+
+    createColumns() {
+        let fields = this.state.columns;
+        return _.map(fields, (field, key) => {
+            console.log("o field: ", field);
+            let column = {
+                dataField: key,
+                text: _.capitalize(key).replace('_'," "),
+                isKey: key=='_id'? true: false,
+                hidden: key=='_id' || key=='__v'? true: false,
+                formatter: (field.options.image)? this.showImage: ''
+            }
+            console.log("collumn: ", column);
+            return column
+        })
+
+        
+    }
+
     showTable() {
         
         const selectRow = {
@@ -153,7 +181,7 @@ class Table extends Component {
             return <BootstrapTable 
                 keyField={ this.props.keyField? this.props.keyField: '_id'} 
                 data={ this.showData() } 
-                columns={ this.state.columns } 
+                columns={ this.createColumns() } 
                 pagination={ pagination }
                 filter={ filterFactory() }
                 selectRow={ selectRow }
