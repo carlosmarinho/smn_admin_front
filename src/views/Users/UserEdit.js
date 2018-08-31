@@ -4,8 +4,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchUserFields, editUser, fetchUser } from '../actions';
 
-import Window from './Window';
-import MyForm from './MyForm';
+import Window from '../../components/Window';
+import MyForm from '../../components/MyForm';
 
 class UserEdit extends Component{
 
