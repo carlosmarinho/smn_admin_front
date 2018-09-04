@@ -1601,6 +1601,10 @@ textarea.form-control {
     .form-inline .custom-control-label {
       margin-bottom: 0; } }
 
+.btn-toolbar .btn {
+    margin-right: 10px;
+}
+
 .btn {
   display: inline-block;
   font-weight: 400;
@@ -2263,7 +2267,9 @@ input[type="button"].btn-block {
 .btn-toolbar {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start; }
+  justify-content: flex-start;
+  margin: 30px 10px 10px 0px;
+ }
   .btn-toolbar .input-group {
     width: auto; }
 
@@ -2278,7 +2284,8 @@ input[type="button"].btn-block {
 .btn-group > .btn:not(:first-child),
 .btn-group > .btn-group:not(:first-child) > .btn {
   border-top-left-radius: 0;
-  border-bottom-left-radius: 0; }
+  border-bottom-left-radius: 0; 
+}
 
 .dropdown-toggle-split {
   padding-right: 0.5625rem;

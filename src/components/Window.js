@@ -59,7 +59,14 @@ class Window extends Component{
     }
 
     remove(id){
-        alert('testnnnnnn')
+    }
+
+    getIconName(){
+        if(this.props.icon && this.props.icon != ''){
+            return `fa fa-${this.props.icon}`;
+        }
+        else
+            return "fa fa-align-justify";
     }
 
     render(){
@@ -69,7 +76,7 @@ class Window extends Component{
                 <Col xl={12}>
                     <Card>
                     <CardHeader>
-                        <i className="fa fa-align-justify"></i> Users <small className="text-muted">example</small>
+                        <i className={this.getIconName()}></i> {this.props.name} <small className="text-muted">{this.props.subtitle}</small>
                     </CardHeader>
                     <CardBody>
                         {this.msgError()}

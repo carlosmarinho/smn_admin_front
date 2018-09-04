@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import filterFactory from 'react-bootstrap-table2-filter';  
+import filterFactory, { textFilter, selectFilter, multiSelectFilter, numberFilter, dateFilter }  from 'react-bootstrap-table2-filter';  
+import { AppSwitch } from '@coreui/react'
 import querystring from 'query-string';
 import MyModal from './MyModal'
 
@@ -46,6 +47,10 @@ class Table extends Component {
         //this.redirectTo = this.redirectTo.bind(this)
         //this.showEditButton = this.showEditButton.bind(this)
         this.removeItem=this.removeItem.bind(this);
+        this.showImage=this.showImage.bind(this);
+        this.showBoolean=this.showBoolean.bind(this);
+
+        this.handleBooleanChecked=this.handleBooleanChecked.bind(this);
         //this.createColumns=this.createColumns.bind(this);
     }
 
@@ -105,9 +110,9 @@ class Table extends Component {
 
         if(isSelected){
             //selected = this.state.selectedRows;
-            console.log("beforeeeeee: ", selected)
+            //console.log("beforeeeeee: ", row)
             selected.push(row['_id'])
-            console.log("affterrr: ", selected)
+            //console.log("affterrr: ", selected)
         }
         else{
             //selected = this.state.selectedRows;
@@ -133,18 +138,85 @@ class Table extends Component {
         return _.values(this.props.data);
     }
     
-    showImage(cell, row, rowIndex,) {
-        console.log("celula: ", cell)
+    showImage(cell, row, rowIndex) {
         if(cell) 
         {
             return (
                 <div className="imgPreviewTable">
-                    <Link to={`/user/edit/${row._id}`}><img src={`http://localhost:3001/image/path/${encodeURIComponent(JSON.parse(cell).path)}`}  /></Link>
+                    <Link to={`/${this.props.resource}/edit/${row._id}`}><img src={`http://localhost:3001/image/path/${encodeURIComponent(JSON.parse(cell).path)}`}  /></Link>
                 </div>
             ) 
         }
         //return "text"
 
+    }
+
+    showBoolean(cell, row, rowIndex, formatExtraData) {
+        console.log("celula no show boolean: ", formatExtraData)
+        return (
+            <div className="booleanTable"><AppSwitch onChange={this.handleBooleanChecked} name={`${formatExtraData.path}#${row._id}`} className={'mx-1'} variant={'pill'} color={'success'} checked={cell? true: false} /></div>
+        )
+        //return "text"
+
+    }
+
+    handleBooleanChecked(field) {
+        //console.log(`O valor deveria do campo `, field.target.name, ' --- ', field.target.name)
+        let fieldvalue = field.target.name.split('#')
+        this.props.updateField(fieldvalue[1], fieldvalue[0], field.target.checked);
+        return false;
+    }
+    
+
+    getFilter(field) {
+
+        let filter = field.filter
+
+        switch(filter) {
+            case undefined:
+                if(field.instance == 'String'){
+
+                    return textFilter();
+                }
+                else if( field.instance == 'Number' )
+                    return numberFilter();
+                else if( field.instance == 'Date' )
+                    return dateFilter();
+                else if( field.instance == 'Boolean' ){
+                    return selectFilter({options: {0: false, 1: true}});
+                }
+                else
+                    return textFilter();
+                break;
+            case false:
+                break;
+            case 'text':
+                return textFilter();
+                break;
+            case 'select':
+                return selectFilter();
+                break;
+            case 'multi':
+                return multiSelectFilter();
+                break;
+            case 'number':
+                return numberFilter();
+                break;
+            case 'date':
+                return dateFilter();
+                break;
+            default:
+                return textFilter();
+
+        }
+        
+    }
+
+    formatColumn(field) {
+        if(field.options.image)
+            return this.showImage;
+        if(field.instance == 'Boolean')
+            return this.showBoolean;
     }
 
     createColumns() {
@@ -157,7 +229,9 @@ class Table extends Component {
                 text: _.capitalize(key).replace('_'," "),
                 isKey: key=='_id'? true: false,
                 hidden: key=='_id' || key=='__v'? true: false,
-                formatter: (field.options.image)? this.showImage: ''
+                filter: this.getFilter(field),
+                formatter: this.formatColumn(field),
+                formatExtraData: field
             }
             //console.log("collumn: ", column);
             return column

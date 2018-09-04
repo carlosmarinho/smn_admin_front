@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import axios from 'axios';
-import { CREATE_USER, EDIT_USER, REMOVE_USER } from "./types";
+import { CREATE_USER, EDIT_USER, REMOVE_USER, UPDATE_USER_FIELD } from "./types";
 import { FETCH_USER, FETCH_USERS, FETCH_USER_FIELDS } from "./types";
 import { FETCH_LOCATIONS } from "./types";
 
@@ -88,7 +88,38 @@ export async function editUser(id, values, callback) {
         type: EDIT_USER,
         payload: msg
     }
+}
 
+export async function updateUserField(id, field, value, callback) {
+    let request = null;
+    let msg = null;
+   
+    let object = [];
+    object = {id, field, value};
+    console.log("object no update: ", object);
+
+    try{
+        request = await axios.put(`http://localhost:3001/users/update-field/`, object )
+        msg = request.data;
+    }
+    catch(err){
+        if( typeof(err.response.data) === "object"  ){
+            msg = _.map(err.response.data, erro => {
+                let ar = [];
+                ar[erro.path] = erro.message
+                return ar;
+            })
+            msg = {obj: field, error: msg};
+        }
+        else {
+            msg = {obj: field, error: err.response.data}
+        }
+    }
+
+    return {
+        type: UPDATE_USER_FIELD,
+        payload: msg
+    }
 }
 
 /* export async function editUser(id, values, callback) {

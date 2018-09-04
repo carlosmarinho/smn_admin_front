@@ -2,11 +2,11 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 //import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchUserFields } from '../actions';
-import { createUser } from '../actions';
+import { fetchUserFields } from '../../actions';
+import { createUser } from '../../actions';
 
-import Window from './Window';
-import MyForm from './MyForm';
+import Window from '../../components/Window';
+import MyForm from '../../components/MyForm'
 
 class UserNew extends Component{
 
@@ -88,7 +88,7 @@ class UserNew extends Component{
 
         return(
             <div>
-            <Window name="Cadastro de novo usuário" element={element} msgError={errors} msgSuccess={msg_success} />
+            <Window name="Cadastro de novo usuário"  icon="user" element={element} msgError={errors} msgSuccess={msg_success} />
             
             </div>
         )

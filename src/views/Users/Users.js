@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchUsers, fetchUserFields, removeUser } from '../../actions';
+import { fetchUsers, fetchUserFields, removeUser, updateUserField } from '../../actions';
 import Window from '../../components/Window';
 import Table from '../../components/Table';
 
@@ -16,6 +16,7 @@ class User extends Component {
 
         this.state = {users: []}
         this.remove = this.remove.bind(this);
+        this.updateField = this.updateField.bind(this);
         
     }
 
@@ -54,6 +55,11 @@ class User extends Component {
         
     }
 
+    updateField(id, field, value){
+        console.log("id: ", id, " --- field: ", field, " --- value: ", value );
+        this.props.updateUserField(id, field, value);
+    }
+
     remove(ids) {
         this.props.removeUser(ids)
         
@@ -69,7 +75,6 @@ class User extends Component {
             })
             
         }
-
 
 
         this.setState({users:users});
@@ -104,7 +109,7 @@ class User extends Component {
               };
 
               //this.setState({users: this.props.users.users})
-            return <Table data={this.state.users} columns={this.props.usersFields} name="Usuário" create resource="user" remove={this.remove} />
+            return <Table data={this.state.users} columns={this.props.usersFields} name="Usuário" create resource="user" remove={this.remove} updateField={this.updateField} />
             //return <BootstrapTable keyField='id' data={ this.props.users } columns={ columns } />
         }
         return <div>Carregando Usuários ...</div>;
@@ -141,7 +146,7 @@ class User extends Component {
 
 
         return (
-            <Window name="Lista de Usuários" element={this.renderUsers()} msgError={errors} msgSuccess={msg_success} />
+            <Window name="Lista de Usuários" element={this.renderUsers()} icon="user" subtitle="Grid" msgError={errors} msgSuccess={msg_success} />
         );
     }
     
@@ -154,4 +159,4 @@ function mapStateToProps(state){
     }
 }
 
-export default connect(mapStateToProps, { fetchUsers, fetchUserFields, removeUser })(User);
+export default connect(mapStateToProps, { fetchUsers, fetchUserFields, removeUser, updateUserField })(User);

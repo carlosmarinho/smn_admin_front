@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 //import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchUserFields, editUser, fetchUser } from '../actions';
+import { fetchUserFields, editUser, fetchUser } from '../../actions';
 
 import Window from '../../components/Window';
 import MyForm from '../../components/MyForm';
@@ -97,7 +97,7 @@ class UserEdit extends Component{
 
         return(
             <div>
-            <Window name="Edição de usuário" element={element} msgError={errors} msgSuccess={msg_success} />
+            <Window name="Edição de usuário"  icon="user" element={element} msgError={errors} msgSuccess={msg_success} />
             
             </div>
         )

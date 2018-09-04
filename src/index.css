@@ -23,7 +23,7 @@ body {
       margin-bottom:20px;
   }
 
-  .imgPreviewTable{
+  .imgPreviewTable, .booleanTable{
     text-align: center
   }
 
