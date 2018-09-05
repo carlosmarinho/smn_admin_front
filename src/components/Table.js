@@ -9,7 +9,6 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter, selectFilter, multiSelectFilter, numberFilter, dateFilter }  from 'react-bootstrap-table2-filter';  
 import { AppSwitch } from '@coreui/react'
-import querystring from 'query-string';
 import MyModal from './MyModal'
 
 const pagination = paginationFactory({
@@ -36,7 +35,7 @@ class Table extends Component {
 
         this.state = {
             columns: this.props.columns,
-            selectedRows: [],
+            selectedRow: [],
             redirect: false,
             lgShow: false
         }
@@ -106,11 +105,17 @@ class Table extends Component {
             return <Button bsStyle="danger" /*onClick={this.removeItem}*/ onClick={this.removeItem} >Excluir {this.props.name}</Button>
     }
 
-    onRowSelect(row, isSelected){
+    selectRowByDoubleClick(e, row, rowIndex) {
+        selected = []
+        this.setState({selectedRow: [row._id]});
+        this.onRowSelect(row, true);
+    }
 
+    onRowSelect(row, isSelected) {
+        console.log("vamos ver como está o estado do selectedRow: ", this.state.selectedRow)
         if(isSelected){
             //selected = this.state.selectedRows;
-            //console.log("beforeeeeee: ", row)
+            console.log("beforeeeeee: ", row)
             selected.push(row['_id'])
             //console.log("affterrr: ", selected)
         }
@@ -152,7 +157,6 @@ class Table extends Component {
     }
 
     showBoolean(cell, row, rowIndex, formatExtraData) {
-        console.log("celula no show boolean: ", formatExtraData)
         return (
             <div className="booleanTable"><AppSwitch onChange={this.handleBooleanChecked} name={`${formatExtraData.path}#${row._id}`} className={'mx-1'} variant={'pill'} color={'success'} checked={cell? true: false} /></div>
         )
@@ -161,9 +165,14 @@ class Table extends Component {
     }
 
     handleBooleanChecked(field) {
-        //console.log(`O valor deveria do campo `, field.target.name, ' --- ', field.target.name)
+        let selectedRow = selected
+        console.log(`O valor deveria do campo `, field.target.name, ' --- ', field.target.name)
         let fieldvalue = field.target.name.split('#')
         this.props.updateField(fieldvalue[1], fieldvalue[0], field.target.checked);
+
+        //Vou zerar o status do selected pois eu mudo o state da tabela
+        this.setState({selectedRow: selected})
+        
         return false;
     }
     
@@ -183,7 +192,12 @@ class Table extends Component {
                 else if( field.instance == 'Date' )
                     return dateFilter();
                 else if( field.instance == 'Boolean' ){
-                    return selectFilter({options: {0: false, 1: true}});
+                    if(field.path == 'status'){
+                        return selectFilter({options: {false: 'Inativo', true: 'Ativo'}});
+                    }
+                    else {
+                        return selectFilter({options: {false: 'false', true: 'true'}});
+                    }
                 }
                 else
                     return textFilter();
@@ -221,9 +235,8 @@ class Table extends Component {
 
     createColumns() {
         let fields = this.state.columns;
-        console.log("Meus fields: ",fields);
+
         return _.map(fields, (field, key) => {
-            console.log("o field: ", field, " --- ", key);
             let column = {
                 dataField: key,
                 text: _.capitalize(key).replace('_'," "),
@@ -244,11 +257,16 @@ class Table extends Component {
         
         const selectRow = {
             mode: 'checkbox',
-            clickToSelect: true,
+            clickToSelect: false,
             style: { background: '#ccccff' },
             onSelect: this.onRowSelect,
-            onSelectAll:this.onSelectAll
+            onSelectAll:this.onSelectAll,
+            selected: this.state.selectedRow
         };
+
+        const rowEvents = {
+            onDoubleClick: (e, row, rowIndex) => {this.selectRowByDoubleClick(e, row, rowIndex)}
+        }
 
 
         if(this.state.columns) { 
@@ -260,6 +278,7 @@ class Table extends Component {
                 pagination={ pagination }
                 filter={ filterFactory() }
                 selectRow={ selectRow }
+                rowEvents={ rowEvents }
             /> 
 
         }

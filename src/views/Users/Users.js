@@ -56,8 +56,12 @@ class User extends Component {
     }
 
     updateField(id, field, value){
-        console.log("id: ", id, " --- field: ", field, " --- value: ", value );
+       
+        
         this.props.updateUserField(id, field, value);
+        let users = this.state.users;
+        users[id][field] = value;
+        this.setState({users});
     }
 
     remove(ids) {

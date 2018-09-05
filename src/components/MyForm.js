@@ -33,7 +33,69 @@ class MyForm extends Component{
         }
     }
 
+    fieldText(field) {
+        const { type } = field
+        return (
+                <input
+                    className="form-control"
+                    type={type}
+                    required={field.required}
+                    {...field.input}
+                />
+        )
+    }
+
+
+    fieldSelect(field) {
+
+        let options = field.option.map((option, key) => {
+            console.log("option: ", option, " key: ", key)
+            return <option key={key} value={_.keys(option)}>{_.values(option)}</option>
+        }) 
+        return (
+                <select
+                    className="form-control"
+                    required={field.required}
+                    {...field.input}
+                >
+                    <option>Selecione</option>
+                    {options}
+
+                </select>
+        )
+    }
+
+    fieldRadio(field) {
+
+        console.log("ffffff::: ", field.meta.initial);
+        let radios = field.option.map((option, key) => {
+            console.log("option: ", option, " key: ", key)
+            return (
+                <div className="form-control">
+                    <input type="radio" {...field.input} value={_.keys(option)} checked={ String(field.meta.initial) == _.keys(option)} /> {_.values(option)}
+                </div>
+            )
+            //return <option key={key} value={_.keys(option)}>{_.values(option)}</option>
+        }) 
+        return (
+                    radios
+        )
+    }
+
+    fieldType(field)
+    {
+        if(field.type == 'text')
+            return this.fieldText(field);
+        else if(field.type == 'select')
+            return this.fieldSelect(field);
+        else if(field.type == 'radio')
+            return this.fieldRadio(field);
+        else
+            return this.fieldText(field);
+    }
+
     renderField(field) {
+
         const { input, type, meta: { touched, error, warning } } = field
         if(field.isImage){
             delete input.value
@@ -43,8 +105,30 @@ class MyForm extends Component{
         let className = '';
 
 
-        if(type != "hidden") {
+        if(type == "hidden") {
+            return(
+                <input
+                    className="form-control"
+                    type={type}
+                    required={field.required}
+                    {...field.input}
+                /> 
+            )
 
+        }
+       /*  else if( type == "radio") {
+            return (
+                <div>
+                    <label className="radio-inline">
+                        <input type="radio" name="hasCar" value="yes" /> Yes
+                    </label>
+                    <label className="radio-inline">
+                        <input type="radio" name="hasCar" value="yes" /> No
+                    </label>
+                </div>
+            )
+        } */
+        else {
             if(this.props.errors){
                 if(this.props.errors instanceof Array) {
                     this.props.errors.map(erro => {
@@ -78,35 +162,23 @@ class MyForm extends Component{
                 }
             }
             
+            
+            
+            
             return (
-                
                 <div className={className}>
-                    
-                    
                     <label className="control-label">{field.label}</label>
-                    <input
-                        className="form-control"
-                        type={type}
-                        required={field.required}
-                        {...field.input}
-                    />
+                    {this.fieldType(field)}
                     <span className={classFeedback} aria-hidden="true"></span>
                     <span className="help-block">{field.meta.touched ? field.meta.error : ''}</span>
                     {this.imagePreview(field, this.props.resource, this.props.object)}
                     
                 </div>
             )
+               
+            
         }
-        else {
-            return(
-            <input
-                className="form-control"
-                type={type}
-                required={field.required}
-                {...field.input}
-            /> 
-            )
-        }
+        
         
     }
 
@@ -135,9 +207,17 @@ class MyForm extends Component{
         return _.map(fields, (field, key) => {
             let type = "text";
             let name = key;
+            let options = [];
             if(field.options.image) {
                 //name = key + '_img'
                 type = "file";
+                
+            }
+            else if(field.instance == 'Boolean'){
+                type = "radio";
+                options = [{false: 'Inativo'}, {true: 'Ativo'}]
+
+                //options = this.getOptions(options);
             }
             
             return (
@@ -150,13 +230,15 @@ class MyForm extends Component{
                     required={field.isRequired}
                     isImage={field.options.image}
                     _id={id}
-                    
-                />     
+                    option={options}
+                   
+                />
+                 
             )
         })
     }
     
-    
+   
 
     render() {
 

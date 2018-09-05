@@ -57,8 +57,6 @@ class UserEdit extends Component{
         _.merge(object, {resource: 'user'});
         
 
-        console.log("object no merge: ", object);
-
         return (<MyForm errors={errors} fields={fields} object={object} onSubmit={this.submit.bind(this)} resource="user" />)
     }
 
