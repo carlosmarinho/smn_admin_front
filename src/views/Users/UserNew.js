@@ -53,17 +53,26 @@ class UserNew extends Component{
 
     getForm(errors, fields) {
         let object = {resource: 'user'};
+        //Ajustes para a mensagem de sucesso para zerar todos os dados
+
+        
         if(this.props.users && this.props.users.msg_success){
             _.map( this.props.usersFields, field => {
-
+                
                 if(field.options.image)
-                    object[field.path + '_img'] = '';
+                object[field.path + '_img'] = '';
                 else
-                    object[field.path] = ''
+                object[field.path] = ''
             })
         }
+        
+        _.map( this.props.usersFields, field => {
+            if(field.defaultValue)
+                object[field.path] = field.defaultValue;
+        })
+
         console.log("o objeto: ", object);
-        return (<MyForm errors={errors} fields={fields} object={object} onSubmit={this.submit.bind(this)} resource="user" />)
+        return (<MyForm errors={errors} fields={fields} object={object} onSubmit={this.submit.bind(this)} resource="user" type="create"/>)
     }
 
     render() {

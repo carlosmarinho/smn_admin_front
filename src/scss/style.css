@@ -230,6 +230,10 @@ button,
 select {
   text-transform: none; }
 
+option{
+    margin-top:10px;
+}
+
 button,
 html [type="button"],
 [type="reset"],

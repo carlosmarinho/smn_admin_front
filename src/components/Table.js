@@ -184,8 +184,18 @@ class Table extends Component {
         switch(filter) {
             case undefined:
                 if(field.instance == 'String'){
-
-                    return textFilter();
+                    console.log("field no filter: ", field)
+                    if(field.enumValues.length > 1)
+                    {
+                        let obj = {}
+                        field.enumValues.map(value => {
+                            obj[value] = value;
+                        })
+                        console.log("o objeto aqui: ", obj)
+                        return selectFilter({options: obj});
+                    }
+                    else
+                        return textFilter();
                 }
                 else if( field.instance == 'Number' )
                     return numberFilter();

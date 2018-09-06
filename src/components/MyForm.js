@@ -5,12 +5,16 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import { Button, ButtonToolbar  } from 'react-bootstrap';
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 class MyForm extends Component{
 
     constructor(props, context) {
         super(props, context);
+
+        this.state = { text: '' } // You can also pass a Quill Delta here
+
     
         this.renderField = this.renderField.bind(this);
         this.imagePreview = this.imagePreview.bind(this);
@@ -49,16 +53,30 @@ class MyForm extends Component{
     fieldSelect(field) {
 
         let options = field.option.map((option, key) => {
-            console.log("option: ", option, " key: ", key)
-            return <option key={key} value={_.keys(option)}>{_.values(option)}</option>
+            
+            if(option instanceof Object || option instanceof Array){
+                return <option key={key} value={_.keys(option)}>{_.capitalize(_.values(option))}</option>
+            }
+            else{
+                if(option)
+                    return <option key={key} value={option}>{_.capitalize(option)}</option>
+                else{
+                    //return <option key={key} value="">Selecione {_.capitalize(field.input.name)}</option>
+                    return false;
+                }
+            }
+            
         }) 
+
+        options.map
+
         return (
                 <select
                     className="form-control"
                     required={field.required}
                     {...field.input}
                 >
-                    <option>Selecione</option>
+                    <option key="selecione" value="">Selecione {_.capitalize(field.input.name)}</option>
                     {options}
 
                 </select>
@@ -69,16 +87,27 @@ class MyForm extends Component{
 
         console.log("ffffff::: ", field.meta.initial);
         let radios = field.option.map((option, key) => {
-            console.log("option: ", option, " key: ", key)
-            return (
-                <div className="form-control">
-                    <input type="radio" {...field.input} value={_.keys(option)} checked={ String(field.meta.initial) == _.keys(option)} /> {_.values(option)}
-                </div>
-            )
+            
+            if(option instanceof Object || option instanceof Array){
+                return (
+                    <span key={key} className="mr-3">
+                        <input type="radio" {...field.input} value={_.keys(option)} checked={ String(field.meta.initial) == _.keys(option)} /> {_.capitalize(_.values(option))}
+                    </span>
+                )
+            }
+            else {
+                return (
+                    <span key={key} className="mr-3">
+                        <input type="radio" {...field.input} value={option} checked={ String(field.meta.initial) == option} /> {_.capitalize(option)}
+                    </span>
+                )
+            }
             //return <option key={key} value={_.keys(option)}>{_.values(option)}</option>
         }) 
         return (
-                    radios
+            <div className="form-control">
+                    {radios}
+            </div>
         )
     }
 
@@ -116,18 +145,6 @@ class MyForm extends Component{
             )
 
         }
-       /*  else if( type == "radio") {
-            return (
-                <div>
-                    <label className="radio-inline">
-                        <input type="radio" name="hasCar" value="yes" /> Yes
-                    </label>
-                    <label className="radio-inline">
-                        <input type="radio" name="hasCar" value="yes" /> No
-                    </label>
-                </div>
-            )
-        } */
         else {
             if(this.props.errors){
                 if(this.props.errors instanceof Array) {
@@ -211,14 +228,47 @@ class MyForm extends Component{
             if(field.options.image) {
                 //name = key + '_img'
                 type = "file";
-                
-            }
-            else if(field.instance == 'Boolean'){
-                type = "radio";
-                options = [{false: 'Inativo'}, {true: 'Ativo'}]
 
-                //options = this.getOptions(options);
             }
+            else if(field.options.inputForm){
+                type = field.options.inputForm;
+
+                if(field.enumValues){
+                    options = field.enumValues;
+                }
+                else if(field.instance == 'Boolean'){
+                    if(field.path == 'status')
+                        options = [{false: 'Inativo'}, {true: 'Ativo'}]
+                    else
+                        options = [{false: 'false'}, {true: 'true'}]
+                }
+            }
+            else {
+                if(field.instance == 'String' && field.enumValues.length > 1){
+                    if(field.enumValues <= 2 )
+                        type = 'radio';
+                    else
+                        type = 'select';
+                    
+                    options = field.enumValues;
+                    
+    
+                    //options = this.getOptions(options);
+                }
+                else if(field.instance == 'Boolean'){
+                    type = "radio";
+                    if(field.path == 'status') {
+                        options = [{false: 'Inativo'}, {true: 'Ativo'}]
+                        if(this.props.type == 'create')
+                            type="hidden";
+                    }
+                    else
+                        options = [{false: 'false'}, {true: 'true'}]
+    
+                    //options = this.getOptions(options);
+                }
+            }
+            
             
             return (
                 <Field
@@ -238,6 +288,9 @@ class MyForm extends Component{
         })
     }
     
+    handleChange(value) {
+        this.setState({ text: value })
+    }
    
 
     render() {
@@ -265,6 +318,9 @@ class MyForm extends Component{
                         <Button type="submit" className="btn btn-primary">Submit</Button>
                         <Link to={`/${this.props.resource}`} className="btn btn-danger" >Voltar</Link>
                     </ButtonToolbar>
+
+                    <ReactQuill value={this.state.text} onChange={this.handleChange} />
+
                 </form>
         )
     }

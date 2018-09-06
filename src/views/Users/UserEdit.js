@@ -57,7 +57,7 @@ class UserEdit extends Component{
         _.merge(object, {resource: 'user'});
         
 
-        return (<MyForm errors={errors} fields={fields} object={object} onSubmit={this.submit.bind(this)} resource="user" />)
+        return (<MyForm errors={errors} fields={fields} object={object} onSubmit={this.submit.bind(this)} resource="user" type="edit" />)
     }
 
     render() {
