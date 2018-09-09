@@ -5,24 +5,25 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import { Button, ButtonToolbar  } from 'react-bootstrap';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import MyEditor from './MyEditor';
+
 
 class MyForm extends Component{
 
     constructor(props, context) {
         super(props, context);
 
-        this.state = { text: '' } // You can also pass a Quill Delta here
-
+        this.state = {quill: []}
+        
     
         this.renderField = this.renderField.bind(this);
         this.imagePreview = this.imagePreview.bind(this);
+        this.myCallback = this.myCallback.bind(this);
     }
 
     imagePreview(field, resource){
         
-        if(field.isImage && field._id != 0)
+        if(field.isImage && field._id !== 0)
         {
             let fieldname = field.input.name.replace('_img','')
             
@@ -43,6 +44,34 @@ class MyForm extends Component{
                 <input
                     className="form-control"
                     type={type}
+                    required={field.required}
+                    {...field.input}
+                />
+        )
+    }
+
+    myCallback(dataFromChild){
+        let array = [];
+        array['campo'] = dataFromChild;
+        this.setState({quill: array})
+        console.log('Data from child: ', dataFromChild)
+    }
+
+    fieldQuill(field) {
+        const { type } = field
+        let style = {height:'210px', marginBottom:'20px', padding: '0px'};
+        return (
+          <MyEditor callbackFromParent={this.myCallback}/>
+        )
+    }
+
+
+    fieldTextArea(field) {
+        const { type } = field
+        return (
+                <textarea
+                    className="form-control"
+                    
                     required={field.required}
                     {...field.input}
                 />
@@ -83,7 +112,7 @@ class MyForm extends Component{
         )
     }
 
-    fieldRadio(field) {
+    fieldRadioOrCheck(field) {
 
         console.log("ffffff::: ", field.meta.initial);
         let radios = field.option.map((option, key) => {
@@ -91,14 +120,14 @@ class MyForm extends Component{
             if(option instanceof Object || option instanceof Array){
                 return (
                     <span key={key} className="mr-3">
-                        <input type="radio" {...field.input} value={_.keys(option)} checked={ String(field.meta.initial) == _.keys(option)} /> {_.capitalize(_.values(option))}
+                        <input type={field.type} {...field.input} value={_.keys(option)} checked={ String(field.meta.initial) == _.keys(option)} /> {_.capitalize(_.values(option))}
                     </span>
                 )
             }
             else {
                 return (
                     <span key={key} className="mr-3">
-                        <input type="radio" {...field.input} value={option} checked={ String(field.meta.initial) == option} /> {_.capitalize(option)}
+                        <input type={field.type} {...field.input} value={option} checked={ String(field.meta.initial) == option} /> {_.capitalize(option)}
                     </span>
                 )
             }
@@ -110,6 +139,7 @@ class MyForm extends Component{
             </div>
         )
     }
+    
 
     fieldType(field)
     {
@@ -117,8 +147,12 @@ class MyForm extends Component{
             return this.fieldText(field);
         else if(field.type == 'select')
             return this.fieldSelect(field);
-        else if(field.type == 'radio')
-            return this.fieldRadio(field);
+        else if(field.type == 'radio' || field.type == 'checkbox')
+            return this.fieldRadioOrCheck(field);
+        else if(field.type == 'textarea')
+            return this.fieldTextArea(field);
+        else if(field.type == 'quill')
+            return this.fieldQuill(field);
         else
             return this.fieldText(field);
     }
@@ -202,6 +236,7 @@ class MyForm extends Component{
 
     
     onSubmit(values) {
+        
         // this === component (thats the reason we used .bind(this)
         // on onSubmit, because different context of variable)
         //console.log(values);
@@ -212,7 +247,10 @@ class MyForm extends Component{
         if(this.props.users){
             console.log("Users: ", this.props.users);
         }*/
-        this.props.submit(values);
+
+        console.log("o campo é: ", this.state.quill);
+
+        //this.props.submit(values);
     }
 
     loadFields(fields, object) {
@@ -314,12 +352,12 @@ class MyForm extends Component{
 
 
                     {this.loadFields(fields, this.props.object)}
+
                     <ButtonToolbar>
                         <Button type="submit" className="btn btn-primary">Submit</Button>
                         <Link to={`/${this.props.resource}`} className="btn btn-danger" >Voltar</Link>
                     </ButtonToolbar>
 
-                    <ReactQuill value={this.state.text} onChange={this.handleChange} />
 
                 </form>
         )

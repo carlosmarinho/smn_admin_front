@@ -37,3 +37,10 @@ body {
     padding: 5px;
   }
 
+  .rdw-editor-main {
+    height: 150px !important;
+  }
+
+  .ql-container {
+    height: 150px !important;
+  }
