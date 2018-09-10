@@ -12,15 +12,27 @@ class MyEditor extends Component {
   }
 
   handleChange(value) {
-    console.log("handle change", value)
     this.setState({ text: value });
-    this.props.callbackFromParent(this.state.text);
+    this.props.callbackFromParent(this.props.fieldName, this.state.text);
   }
 
   render() {
-    
+    //let value = '';
+    let className = "text-editor";
+    if(this.props.type)
+    {
+      if(this.props.type == 'quillSmall')
+        className = 'text-editor-small'
+      else if(this.props.type == 'quillBig')
+        className = 'text-editor-big'
+    }
+
+    if(this.props.value){
+      if(this.state.text == '')
+        this.setState({text: this.props.value});
+    }
     return (
-      <div className="text-editor">
+      <div className={className}>
         <ReactQuill
             theme={'snow'}
             onChange={this.handleChange}

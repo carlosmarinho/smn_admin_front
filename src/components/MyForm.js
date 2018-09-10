@@ -13,7 +13,7 @@ class MyForm extends Component{
     constructor(props, context) {
         super(props, context);
 
-        this.state = {quill: []}
+        this.state = {quill: {}}
         
     
         this.renderField = this.renderField.bind(this);
@@ -50,18 +50,22 @@ class MyForm extends Component{
         )
     }
 
-    myCallback(dataFromChild){
-        let array = [];
-        array['campo'] = dataFromChild;
+    myCallback(field, dataFromChild){
+        let array = this.state.quill;
+        array[field] = dataFromChild;
         this.setState({quill: array})
-        console.log('Data from child: ', dataFromChild)
     }
 
     fieldQuill(field) {
+        let initialValue = null;
+        if(this.props.initialValues){
+            initialValue = this.props.initialValues[field.input.name];
+        }
+        console.log('fielddd: ', field)
         const { type } = field
         let style = {height:'210px', marginBottom:'20px', padding: '0px'};
         return (
-          <MyEditor callbackFromParent={this.myCallback}/>
+          <MyEditor callbackFromParent={this.myCallback} type={field.type} fieldName={field.input.name} value={initialValue}/>
         )
     }
 
@@ -97,8 +101,6 @@ class MyForm extends Component{
             
         }) 
 
-        options.map
-
         return (
                 <select
                     className="form-control"
@@ -114,7 +116,6 @@ class MyForm extends Component{
 
     fieldRadioOrCheck(field) {
 
-        console.log("ffffff::: ", field.meta.initial);
         let radios = field.option.map((option, key) => {
             
             if(option instanceof Object || option instanceof Array){
@@ -151,7 +152,7 @@ class MyForm extends Component{
             return this.fieldRadioOrCheck(field);
         else if(field.type == 'textarea')
             return this.fieldTextArea(field);
-        else if(field.type == 'quill')
+        else if(field.type == 'quill' || field.type == 'quillBig' || field.type == 'quillSmall'   )
             return this.fieldQuill(field);
         else
             return this.fieldText(field);
@@ -222,8 +223,7 @@ class MyForm extends Component{
                     {this.fieldType(field)}
                     <span className={classFeedback} aria-hidden="true"></span>
                     <span className="help-block">{field.meta.touched ? field.meta.error : ''}</span>
-                    {this.imagePreview(field, this.props.resource, this.props.object)}
-                    
+                    {this.imagePreview(field, this.props.resource, this.props.object)}               
                 </div>
             )
                
@@ -248,9 +248,14 @@ class MyForm extends Component{
             console.log("Users: ", this.props.users);
         }*/
 
-        console.log("o campo é: ", this.state.quill);
+        
+        _.map(this.state.quill, (value, key) => {
+            console.log("key: ", key, " ==== ", value);
+            values[key] = value;
+        });
 
-        //this.props.submit(values);
+
+        this.props.submit(values);
     }
 
     loadFields(fields, object) {
