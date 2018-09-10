@@ -71,6 +71,8 @@ class UserNew extends Component{
                 object[field.path] = field.defaultValue;
         })
 
+        console.log("passando os erros para o form: ", errors);
+
         return (<MyForm errors={errors} fields={fields} object={object} onSubmit={this.submit.bind(this)} resource="user" type="create"/>)
     }
 

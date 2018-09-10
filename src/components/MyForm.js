@@ -16,9 +16,11 @@ class MyForm extends Component{
         this.state = {quill: {}}
         
     
+        this.loadFields = this.loadFields.bind(this);
         this.renderField = this.renderField.bind(this);
         this.imagePreview = this.imagePreview.bind(this);
         this.myCallback = this.myCallback.bind(this);
+        this.fieldConfirmPassword = this.fieldConfirmPassword.bind(this);
     }
 
     imagePreview(field, resource){
@@ -38,7 +40,24 @@ class MyForm extends Component{
         }
     }
 
-    fieldText(field) {
+    fieldText(field, valid = null) {
+        let is_valid = '';
+        if(valid != null){
+            is_valid = (valid)? 'is-valid':'is-invalid';
+        }
+
+        const { type } = field
+        return (
+                <input
+                    className={`form-control ${is_valid}`}
+                    type={type}
+                    required={field.required}
+                    {...field.input}
+                />
+        )
+    }
+
+    /* fieldPassword(field) {
         const { type } = field
         return (
                 <input
@@ -48,7 +67,7 @@ class MyForm extends Component{
                     {...field.input}
                 />
         )
-    }
+    } */
 
     myCallback(field, dataFromChild){
         let array = this.state.quill;
@@ -56,12 +75,12 @@ class MyForm extends Component{
         this.setState({quill: array})
     }
 
-    fieldQuill(field) {
+    fieldQuill(field, valid = null) {
         let initialValue = null;
         if(this.props.initialValues){
             initialValue = this.props.initialValues[field.input.name];
         }
-        console.log('fielddd: ', field)
+
         const { type } = field
         let style = {height:'210px', marginBottom:'20px', padding: '0px'};
         return (
@@ -70,7 +89,7 @@ class MyForm extends Component{
     }
 
 
-    fieldTextArea(field) {
+    fieldTextArea(field, valid = null) {
         const { type } = field
         return (
                 <textarea
@@ -83,7 +102,7 @@ class MyForm extends Component{
     }
 
 
-    fieldSelect(field) {
+    fieldSelect(field, valid = null) {
 
         let options = field.option.map((option, key) => {
             
@@ -114,7 +133,7 @@ class MyForm extends Component{
         )
     }
 
-    fieldRadioOrCheck(field) {
+    fieldRadioOrCheck(field, valid = null) {
 
         let radios = field.option.map((option, key) => {
             
@@ -142,25 +161,51 @@ class MyForm extends Component{
     }
     
 
-    fieldType(field)
+    fieldType(field, valid = null)
     {
-        if(field.type == 'text')
-            return this.fieldText(field);
+        if(field.type == 'text'){
+            //console.log("o field: ", field, " --- valido: ", valid)
+            return this.fieldText(field, valid);
+        }
         else if(field.type == 'select')
-            return this.fieldSelect(field);
+            return this.fieldSelect(field, valid);
         else if(field.type == 'radio' || field.type == 'checkbox')
-            return this.fieldRadioOrCheck(field);
+            return this.fieldRadioOrCheck(field, valid);
         else if(field.type == 'textarea')
-            return this.fieldTextArea(field);
+            return this.fieldTextArea(field, valid);
         else if(field.type == 'quill' || field.type == 'quillBig' || field.type == 'quillSmall'   )
-            return this.fieldQuill(field);
+            return this.fieldQuill(field, valid);
         else
-            return this.fieldText(field);
+            return this.fieldText(field, valid);
+    }
+
+    fieldConfirmPassword(field){
+        const { input, type, meta: { touched, error, warning } } = field
+
+        let valid = null;
+        let className = '';
+        let classFeedback = '';
+
+        if(field.error){
+            valid = false;
+            className = 'invalid-feedback';
+            //field.meta.error = field.error;
+        }
+
+        return (
+            <div className="form-group">
+                <label className="control-label">Confirme {field.label}</label>
+                {this.fieldType(field, valid)}
+                <span className={classFeedback} aria-hidden="true"></span>
+                <div className={className} >{field.meta.touched ? field.meta.error : ''}</div>
+            </div>
+        )
     }
 
     renderField(field) {
 
         const { input, type, meta: { touched, error, warning } } = field
+
         if(field.isImage){
             delete input.value
         }
@@ -181,24 +226,56 @@ class MyForm extends Component{
 
         }
         else {
+            let valid = null;
+
+            if(field.error){
+                valid = false;
+                className = 'invalid-feedback';
+                //field.meta.error = field.error;
+            }
+
             if(this.props.errors){
+                console.log("props errors: ", this.props.errors);
                 if(this.props.errors instanceof Array) {
                     this.props.errors.map(erro => {
                         if(erro[field.input.name]) {
                             field.meta.error = erro[field.input.name];
                             classFeedback = `glyphicon glyphicon-remove form-control-feedback`
                             className = `form-group has-error`;
+                            valid = false;
                             console.log("erro no map: ", erro[field.input.name], " --- ", field.name);
                         }
                     } )
                 }
             }
+            
     
             if(touched && className == '') {
-                //console.log("foi touched: ", field);
                 //className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
                 //classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
-                if(field.required) {
+                
+                if(error){
+                    valid = false;
+                    className = 'invalid-feedback'
+                }
+                else {
+                    if(field.required){
+                        if(field.input.value){
+                            valid = true;
+                            className = 'valid-feedback'
+                        }
+                        else {
+                            valid = false;
+                            className = 'invalid-feedback'
+                            console.log("o campo é invalido: ", valid);
+                        }
+                    }
+                }
+
+
+                /* if(field.required) {
+
+
                     if(field.input.value){
                         className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
                         classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
@@ -209,23 +286,45 @@ class MyForm extends Component{
                     }
                 }
                 else{
-                    className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
+                    className = `${ error ? 'invalid-feedback' : 'valid-feedback'} `;
                     classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
-                }
+                } */
             }
             
             
-            
-            
-            return (
-                <div className={className}>
-                    <label className="control-label">{field.label}</label>
-                    {this.fieldType(field)}
-                    <span className={classFeedback} aria-hidden="true"></span>
-                    <span className="help-block">{field.meta.touched ? field.meta.error : ''}</span>
-                    {this.imagePreview(field, this.props.resource, this.props.object)}               
-                </div>
-            )
+            if(type == 'password'){
+                console.log("field: ", field);
+                return(
+                    <div>
+                        <div className="form-group">
+                            <label className="control-label">{field.label}</label>
+                            {this.fieldType(field, valid)}
+                            <span className={classFeedback} aria-hidden="true"></span>
+                            <div className={className} >{field.error?field.error.message:''}{field.meta.touched ? field.meta.error : ''}</div>
+                        </div>
+                        <Field
+                            label={field.label}
+                            className="form-control"
+                            type="password"
+                            key="confirm-password"
+                            name={`confirm-${field.input.name}`}
+                            component={this.fieldConfirmPassword}
+                        />
+
+                    </div>
+                )
+            }
+            else {
+                return (
+                    <div className="form-group">
+                        <label className="control-label">{field.label} </label>
+                        {this.fieldType(field, valid)}
+                        <span className={classFeedback} aria-hidden="true"></span>
+                        <div className={className} >{field.error?field.error.message:''}{field.meta.touched ? field.meta.error : ''}</div>
+                        {this.imagePreview(field, this.props.resource, this.props.object)}               
+                    </div>
+                )
+            }
                
             
         }
@@ -312,7 +411,12 @@ class MyForm extends Component{
                 }
             }
             
-            
+            let error =null;
+            if(this.props.errors){
+                error = this.props.errors[key]
+            }
+
+
             return (
                 <Field
                     type={type}
@@ -324,6 +428,7 @@ class MyForm extends Component{
                     isImage={field.options.image}
                     _id={id}
                     option={options}
+                    error={error}
                    
                 />
                  
@@ -373,7 +478,7 @@ function validate(values, props) {
     
     let errors = {};
     
-
+    
     //console.log("meus campinhos venham cá: ", props.fields)
 
     _.forEach(props.fields, (field, key) => {
@@ -387,17 +492,20 @@ function validate(values, props) {
                 errors[key] = validateMin(key, option, values[key])
            } else if(key1 == 'max') {
                 errors[key] = validateMax(key, option, values[key])
+           } else if( key1 == 'inputForm' && option == 'password' ) {
+               errors[key] = validatePassword(key, option, values[key], values['confirm-password'])
+               //errors[`confirm-${key}`] = errors[key];
            }
+           
 
         })
 
-        //console.log("errors: ", errors);
-
+        
         return errors
     }) 
 
     
-
+    console.log("meus errors: ", errors);
     //errors.username = "Informe o Username"
 
     //If errors is empty, the form is fine to submit
@@ -405,6 +513,15 @@ function validate(values, props) {
     return errors
 }
 
+function validatePassword(campo, value, inputValue, confirmInputValue) {
+    if(inputValue){
+        if(inputValue != confirmInputValue)
+            return "As senhas não são iguais!";
+    }
+    else{
+        return
+    }
+}
 
 function validateRequired(campo, value, inputValue) {
     if((value == true || value === 'true') && (inputValue === '' || inputValue === undefined) ){

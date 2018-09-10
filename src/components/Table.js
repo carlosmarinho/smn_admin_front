@@ -247,12 +247,11 @@ class Table extends Component {
         let fields = this.state.columns;
 
         return _.map(fields, (field, key) => {
-            console.log("fielddd:", field);
             let column = {
                 dataField: key,
                 text: _.capitalize(key).replace('_'," "),
                 isKey: key=='_id'? true: false,
-                hidden: key=='_id' || key=='__v' || field.options.inputForm == 'quill' ? true: false,
+                hidden: key=='_id' || key=='__v' || field.options.inputForm == 'quill' || field.options.inputForm == 'password' ? true: false,
                 filter: this.getFilter(field),
                 formatter: this.formatColumn(field),
                 formatExtraData: field

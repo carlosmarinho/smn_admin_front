@@ -20,7 +20,6 @@ class Window extends Component{
                         return <li>{erro}</li>;
                     }
                 })
-                console.log("error no window: ", error);
                 return <Alert bsStyle="danger">{error}</Alert>
             }
             else if( this.props.msgError instanceof Object) {
@@ -29,16 +28,16 @@ class Window extends Component{
                     error = this.props.msgError.message;
                 }
                 else {
-                     error = _.map(this.props.msgError,  (erro) => {
+                     error = _.map(this.props.msgError,  (erro, i) => {
+
                         if(typeof(erro) === 'object') {
-                            return <li>{_.values(erro.message)}</li>
+                            return <li key={i}>{_.values(erro.message)}</li>
                         }
                         else {
-                            return <li>{erro}</li>;
+                            return <li key={i}>{erro}</li>;
                         }
                     })
                 }
-                console.log("error no window: ", error);
                 return <Alert bsStyle="danger">{error}</Alert>
             }
             else {
