@@ -42,7 +42,7 @@ class UserEdit extends Component{
         //Workaround para caso o usuario não digite nenhuma imagem ele não pegue os valores das imagens padrões
         _.map(this.props.usersFields, field => {
             if(field.options.image){
-                if(values[field.path] == this.props.users[field.path])
+                if(values[field.path] === this.props.users[field.path])
                     delete values[field.path];
             }
         })

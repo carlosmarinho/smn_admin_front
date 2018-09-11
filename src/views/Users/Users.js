@@ -5,10 +5,6 @@ import { fetchUsers, fetchUserFields, removeUser, updateUserField } from '../../
 import Window from '../../components/Window';
 import Table from '../../components/Table';
 
-
-
-
-
 class User extends Component {
 
     constructor(props) {
@@ -45,8 +41,8 @@ class User extends Component {
             let column = {
                 dataField: key,
                 text: _.capitalize(key).replace('_'," "),
-                isKey: key=='_id'? true: false,
-                hidden: key=='_id' || key=='__v'? true: false,
+                isKey: key==='_id'? true: false,
+                hidden: key==='_id' || key==='__v'? true: false,
             }
             
             return column
@@ -68,7 +64,7 @@ class User extends Component {
         this.props.removeUser(ids)
         
         let users = this.state.users;
-        if( ids.length == 1){
+        if( ids.length === 1){
             //let users = this.state.users;
             users = _.omit(users, ids[0]);
              
@@ -76,6 +72,7 @@ class User extends Component {
         else{
             ids.map(id => {
                 users = _.omit(users, id);
+                return null;
             })
             
         }
@@ -88,31 +85,9 @@ class User extends Component {
 
         if(this.props.users){
             
-            const columns = [{
-                dataField: '_id',
-                text: 'ID',
-                isKey: true,
-              }, {
-                  dataField: 'username',
-                  text: 'Usuário',
-                  sort: true
-              }, {
-                dataField: 'first_name',
-                text: 'Nome'
-              }, {
-                  dataField: 'last_name',
-                  text: 'Sobrenome'
-              }
-            ];
+            //let columns1 = this.createColumns(this.props.usersFields);
 
-            let columns1 = this.createColumns(this.props.usersFields);
-            
-            const selectRow = {
-                mode: 'checkbox',
-                clickToSelect: true
-              };
-
-              //this.setState({users: this.props.users.users})
+            //this.setState({users: this.props.users.users})
             return <Table data={this.state.users} columns={this.props.usersFields} name="Usuário" create resource="user" remove={this.remove} updateField={this.updateField} />
             //return <BootstrapTable keyField='id' data={ this.props.users } columns={ columns } />
         }

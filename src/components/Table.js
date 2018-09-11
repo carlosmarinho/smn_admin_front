@@ -9,7 +9,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter, selectFilter, multiSelectFilter, numberFilter, dateFilter }  from 'react-bootstrap-table2-filter';  
 import { AppSwitch } from '@coreui/react'
-import MyModal from './MyModal'
+//import MyModal from './MyModal'
 
 const pagination = paginationFactory({
     sizePerPageList: [ {
@@ -148,7 +148,7 @@ class Table extends Component {
         {
             return (
                 <div className="imgPreviewTable">
-                    <Link to={`/${this.props.resource}/edit/${row._id}`}><img src={`http://localhost:3001/image/path/${encodeURIComponent(JSON.parse(cell).path)}`}  /></Link>
+                    <Link to={`/${this.props.resource}/edit/${row._id}`}><img alt="" src={`http://localhost:3001/image/path/${encodeURIComponent(JSON.parse(cell).path)}`}  /></Link>
                 </div>
             ) 
         }
@@ -165,8 +165,7 @@ class Table extends Component {
     }
 
     handleBooleanChecked(field) {
-        let selectedRow = selected
-        console.log(`O valor deveria do campo `, field.target.name, ' --- ', field.target.name)
+        
         let fieldvalue = field.target.name.split('#')
         this.props.updateField(fieldvalue[1], fieldvalue[0], field.target.checked);
 
@@ -183,13 +182,14 @@ class Table extends Component {
 
         switch(filter) {
             case undefined:
-                if(field.instance == 'String'){
+                if(field.instance === 'String'){
                     console.log("field no filter: ", field)
                     if(field.enumValues.length > 1)
                     {
                         let obj = {}
                         field.enumValues.map(value => {
                             obj[value] = value;
+                            return null
                         })
                         console.log("o objeto aqui: ", obj)
                         return selectFilter({options: obj});
@@ -197,12 +197,12 @@ class Table extends Component {
                     else
                         return textFilter();
                 }
-                else if( field.instance == 'Number' )
+                else if( field.instance === 'Number' )
                     return numberFilter();
-                else if( field.instance == 'Date' )
+                else if( field.instance === 'Date' )
                     return dateFilter();
-                else if( field.instance == 'Boolean' ){
-                    if(field.path == 'status'){
+                else if( field.instance === 'Boolean' ){
+                    if(field.path === 'status'){
                         return selectFilter({options: {false: 'Inativo', true: 'Ativo'}});
                     }
                     else {
@@ -211,27 +211,21 @@ class Table extends Component {
                 }
                 else
                     return textFilter();
-                break;
+                // i dont need this break break;
             case false:
                 break;
             case 'text':
                 return textFilter();
-                break;
             case 'select':
                 return selectFilter();
-                break;
             case 'multi':
                 return multiSelectFilter();
-                break;
             case 'number':
                 return numberFilter();
-                break;
             case 'date':
                 return dateFilter();
-                break;
             default:
                 return textFilter();
-
         }
         
     }
@@ -239,7 +233,7 @@ class Table extends Component {
     formatColumn(field) {
         if(field.options.image)
             return this.showImage;
-        if(field.instance == 'Boolean')
+        if(field.instance === 'Boolean')
             return this.showBoolean;
     }
 
@@ -250,8 +244,8 @@ class Table extends Component {
             let column = {
                 dataField: key,
                 text: _.capitalize(key).replace('_'," "),
-                isKey: key=='_id'? true: false,
-                hidden: key=='_id' || key=='__v' || field.options.inputForm == 'quill' || field.options.inputForm == 'password' ? true: false,
+                isKey: key==='_id'? true: false,
+                hidden: key==='_id' || key==='__v' || field.options.inputForm === 'quill' || field.options.inputForm === 'password' ? true: false,
                 filter: this.getFilter(field),
                 formatter: this.formatColumn(field),
                 formatExtraData: field
@@ -297,14 +291,14 @@ class Table extends Component {
         }
     }
 
-    showModal() {
+    /* showModal() {
         let lgClose = () => this.setState({ lgShow: false });
         let title = `Exclusão de ${this.props.name}`;
         let subtitle = `Tem certeza que deseja excluir o(a) ${this.props.name}`;
-        /*return (
+        return (
             <MyModal show={this.state.lgShow} onHide={lgClose} title={title} subtitle={subtitle} />
-        );*/
-    }
+        );
+    } */
 
     render() {
 

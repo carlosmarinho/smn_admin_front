@@ -21,14 +21,14 @@ class MyEditor extends Component {
     let className = "text-editor";
     if(this.props.type)
     {
-      if(this.props.type == 'quillSmall')
+      if(this.props.type === 'quillSmall')
         className = 'text-editor-small'
-      else if(this.props.type == 'quillBig')
+      else if(this.props.type === 'quillBig')
         className = 'text-editor-big'
     }
 
     if(this.props.value){
-      if(this.state.text == '')
+      if(this.state.text === '')
         this.setState({text: this.props.value});
     }
     return (

@@ -3,6 +3,19 @@ import axios from 'axios';
 import { CREATE_USER, EDIT_USER, REMOVE_USER, UPDATE_USER_FIELD } from "./types";
 import { FETCH_USER, FETCH_USERS, FETCH_USER_FIELDS } from "./types";
 import { FETCH_LOCATIONS } from "./types";
+import { LOGIN } from "./types";
+
+export async function login() {
+    
+    console.log("ué não é array como pode isso?")
+    let request = axios.post(`http://localhost:3001/login/`);
+    
+    return {
+        type: LOGIN,
+        payload: request
+    }
+}
+
 
 export async function createUser(values, callback) {
     let request = null;

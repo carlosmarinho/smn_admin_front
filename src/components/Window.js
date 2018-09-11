@@ -1,6 +1,7 @@
 import _ from 'lodash'; 
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+//import { Badge, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 import { Alert } from 'react-bootstrap'
 
 class Window extends Component{
@@ -61,7 +62,7 @@ class Window extends Component{
     }
 
     getIconName(){
-        if(this.props.icon && this.props.icon != ''){
+        if(this.props.icon && this.props.icon !== ''){
             return `fa fa-${this.props.icon}`;
         }
         else

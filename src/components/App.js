@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter, HashRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import { createStore, applyMiddleware } from 'redux';
 import promise from 'redux-promise';
 
@@ -31,7 +31,6 @@ import { DefaultLayout } from '../containers';
 // Pages
 import { Login, Page404, Page500, Register } from '../views/Pages';
 
-const Dashboard = () => {return <div>Minha Dashboard</div>}
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 
 

@@ -33,7 +33,7 @@ class MyForm extends Component{
                 //console.log('url no image preview::::: ', this.props.object);
                 return(
                     <div className="imgPreview">
-                        <img src={`http://localhost:3001/image/${resource}/${fieldname}/${field._id}`}  />
+                        <img alt="" src={`http://localhost:3001/image/${resource}/${fieldname}/${field._id}`}  />
                     </div>
                 )
             }
@@ -81,8 +81,7 @@ class MyForm extends Component{
             initialValue = this.props.initialValues[field.input.name];
         }
 
-        const { type } = field
-        let style = {height:'210px', marginBottom:'20px', padding: '0px'};
+        
         return (
           <MyEditor callbackFromParent={this.myCallback} type={field.type} fieldName={field.input.name} value={initialValue}/>
         )
@@ -90,7 +89,7 @@ class MyForm extends Component{
 
 
     fieldTextArea(field, valid = null) {
-        const { type } = field
+        //const { type } = field
         return (
                 <textarea
                     className="form-control"
@@ -140,14 +139,14 @@ class MyForm extends Component{
             if(option instanceof Object || option instanceof Array){
                 return (
                     <span key={key} className="mr-3">
-                        <input type={field.type} {...field.input} value={_.keys(option)} checked={ String(field.meta.initial) == _.keys(option)} /> {_.capitalize(_.values(option))}
+                        <input type={field.type} {...field.input} value={_.keys(option)} checked={ String(field.meta.initial) === _.keys(option)} /> {_.capitalize(_.values(option))}
                     </span>
                 )
             }
             else {
                 return (
                     <span key={key} className="mr-3">
-                        <input type={field.type} {...field.input} value={option} checked={ String(field.meta.initial) == option} /> {_.capitalize(option)}
+                        <input type={field.type} {...field.input} value={option} checked={ String(field.meta.initial) === option} /> {_.capitalize(option)}
                     </span>
                 )
             }
@@ -163,24 +162,24 @@ class MyForm extends Component{
 
     fieldType(field, valid = null)
     {
-        if(field.type == 'text'){
+        if(field.type === 'text'){
             //console.log("o field: ", field, " --- valido: ", valid)
             return this.fieldText(field, valid);
         }
-        else if(field.type == 'select')
+        else if(field.type === 'select')
             return this.fieldSelect(field, valid);
-        else if(field.type == 'radio' || field.type == 'checkbox')
+        else if(field.type === 'radio' || field.type === 'checkbox')
             return this.fieldRadioOrCheck(field, valid);
-        else if(field.type == 'textarea')
+        else if(field.type === 'textarea')
             return this.fieldTextArea(field, valid);
-        else if(field.type == 'quill' || field.type == 'quillBig' || field.type == 'quillSmall'   )
+        else if(field.type === 'quill' || field.type === 'quillBig' || field.type === 'quillSmall'   )
             return this.fieldQuill(field, valid);
         else
             return this.fieldText(field, valid);
     }
 
     fieldConfirmPassword(field){
-        const { input, type, meta: { touched, error, warning } } = field
+        const { meta: { touched, error } } = field
 
         let valid = null;
         let className = '';
@@ -197,14 +196,15 @@ class MyForm extends Component{
                 <label className="control-label">Confirme {field.label}</label>
                 {this.fieldType(field, valid)}
                 <span className={classFeedback} aria-hidden="true"></span>
-                <div className={className} >{field.meta.touched ? field.meta.error : ''}</div>
+                <div className={className} >{touched ? error : ''}</div>
             </div>
         )
     }
 
     renderField(field) {
 
-        const { input, type, meta: { touched, error, warning } } = field
+        //const { input, type, meta: { touched, error, warning } } = field
+        const { input, type, meta: { touched, error } } = field
 
         if(field.isImage){
             delete input.value
@@ -214,7 +214,7 @@ class MyForm extends Component{
         let className = '';
 
 
-        if(type == "hidden") {
+        if(type === "hidden") {
             return(
                 <input
                     className="form-control"
@@ -245,12 +245,13 @@ class MyForm extends Component{
                             valid = false;
                             console.log("erro no map: ", erro[field.input.name], " --- ", field.name);
                         }
+                        return null;
                     } )
                 }
             }
             
     
-            if(touched && className == '') {
+            if(touched && className === '') {
                 //className = `form-group ${ error ? 'has-error' : 'has-success'} has-feedback`;
                 //classFeedback = `glyphicon ${ error ? 'glyphicon-remove' : 'glyphicon-ok'} form-control-feedback`
                 
@@ -292,7 +293,7 @@ class MyForm extends Component{
             }
             
             
-            if(type == 'password'){
+            if(type === 'password'){
                 console.log("field: ", field);
                 return(
                     <div>
@@ -378,15 +379,15 @@ class MyForm extends Component{
                 if(field.enumValues){
                     options = field.enumValues;
                 }
-                else if(field.instance == 'Boolean'){
-                    if(field.path == 'status')
+                else if(field.instance === 'Boolean'){
+                    if(field.path === 'status')
                         options = [{false: 'Inativo'}, {true: 'Ativo'}]
                     else
                         options = [{false: 'false'}, {true: 'true'}]
                 }
             }
             else {
-                if(field.instance == 'String' && field.enumValues.length > 1){
+                if(field.instance === 'String' && field.enumValues.length > 1){
                     if(field.enumValues <= 2 )
                         type = 'radio';
                     else
@@ -397,11 +398,11 @@ class MyForm extends Component{
     
                     //options = this.getOptions(options);
                 }
-                else if(field.instance == 'Boolean'){
+                else if(field.instance === 'Boolean'){
                     type = "radio";
-                    if(field.path == 'status') {
+                    if(field.path === 'status') {
                         options = [{false: 'Inativo'}, {true: 'Ativo'}]
-                        if(this.props.type == 'create')
+                        if(this.props.type === 'create')
                             type="hidden";
                     }
                     else
@@ -486,13 +487,13 @@ function validate(values, props) {
           //  errors[key] = `Informe o campo ${key}`;
 
        _.map(field.options, (option, key1) => {
-           if(key1 == 'required') {
+           if(key1 === 'required') {
                errors[key] = validateRequired(key, option, values[key])
-           } else if(key1 == 'min') {
+           } else if(key1 === 'min') {
                 errors[key] = validateMin(key, option, values[key])
-           } else if(key1 == 'max') {
+           } else if(key1 === 'max') {
                 errors[key] = validateMax(key, option, values[key])
-           } else if( key1 == 'inputForm' && option == 'password' ) {
+           } else if( key1 === 'inputForm' && option === 'password' ) {
                errors[key] = validatePassword(key, option, values[key], values['confirm-password'])
                //errors[`confirm-${key}`] = errors[key];
            }
@@ -515,7 +516,7 @@ function validate(values, props) {
 
 function validatePassword(campo, value, inputValue, confirmInputValue) {
     if(inputValue){
-        if(inputValue != confirmInputValue)
+        if(inputValue !== confirmInputValue)
             return "As senhas não são iguais!";
     }
     else{
@@ -524,7 +525,7 @@ function validatePassword(campo, value, inputValue, confirmInputValue) {
 }
 
 function validateRequired(campo, value, inputValue) {
-    if((value == true || value === 'true') && (inputValue === '' || inputValue === undefined) ){
+    if((value === true || value === 'true') && (inputValue === '' || inputValue === undefined) ){
         return `O campo ${campo} é obrigatório!!!`;
     }
     else if(value !== false && (inputValue === '' || inputValue === undefined) ){

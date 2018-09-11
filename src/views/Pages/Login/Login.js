@@ -1,7 +1,22 @@
 import React, { Component } from 'react';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 
+import { connect } from 'react-redux';
+import { login } from '../../../actions';
+
 class Login extends Component {
+
+    /* constructor(props, context) {
+        super(props, context);
+
+       
+    } */
+
+  loginWithGoogle(){
+    this.props.login();
+    console.log("vai logar");
+  }
+
   render() {
     return (
       <div className="app flex-row align-items-center">
@@ -36,6 +51,11 @@ class Login extends Component {
                         </Col>
                         <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>
+                        </Col>
+                      </Row>
+                      <Row className="mt-4">
+                        <Col xs="12">
+                          <Button onClick={this.loginWithGoogle} color="primary"  className="px-4">Login with Google</Button>
                         </Col>
                       </Row>
                     </Form>
