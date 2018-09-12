@@ -8,6 +8,7 @@ import Locations from './locationReducer';
 export default combineReducers({
     users: Users,
     usersFields: UsersFields,
+    login: Users,
     locations: Locations,
     form: formReducer
 })

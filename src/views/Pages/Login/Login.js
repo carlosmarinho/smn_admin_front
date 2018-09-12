@@ -1,20 +1,26 @@
 import React, { Component } from 'react';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import GoogleLogin from 'react-google-login';
 
 import { connect } from 'react-redux';
-import { login } from '../../../actions';
+import { doLogin } from '../../../actions';
 
 class Login extends Component {
-
-    /* constructor(props, context) {
+    
+    constructor(props, context) {
         super(props, context);
+        
+        this.loginWithGoogle = this.loginWithGoogle.bind(this);
 
-       
-    } */
+    } 
+    
+    responseGoogle(response) {
+        console.log("meu response: ", response);
+    }
 
   loginWithGoogle(){
-    this.props.login();
-    console.log("vai logar");
+    this.props.doLogin();
+    //console.log("vai logar", this.props);
   }
 
   render() {
@@ -55,7 +61,12 @@ class Login extends Component {
                       </Row>
                       <Row className="mt-4">
                         <Col xs="12">
-                          <Button onClick={this.loginWithGoogle} color="primary"  className="px-4">Login with Google</Button>
+                        <GoogleLogin
+                            clientId="303837556922-8afhqqiqq36i3np1i1204ughn3asbn72.apps.googleusercontent.com"
+                            buttonText="Login With Google"
+                            onSuccess={this.responseGoogle}
+                            onFailure={this.responseGoogle}
+                        />
                         </Col>
                       </Row>
                     </Form>
@@ -80,4 +91,11 @@ class Login extends Component {
   }
 }
 
-export default Login;
+function mapStateToProps(state) {
+    console.log("aqui no map: ", state)
+    return {
+        login: state.login
+    }
+}
+
+export default connect(mapStateToProps, {doLogin}) (Login)

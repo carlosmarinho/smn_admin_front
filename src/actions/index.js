@@ -5,10 +5,10 @@ import { FETCH_USER, FETCH_USERS, FETCH_USER_FIELDS } from "./types";
 import { FETCH_LOCATIONS } from "./types";
 import { LOGIN } from "./types";
 
-export async function login() {
+export async function doLogin() {
     
     console.log("ué não é array como pode isso?")
-    let request = axios.post(`http://localhost:3001/login/`);
+    let request = axios.get(`http://localhost:3001/auth/google`);
     
     return {
         type: LOGIN,

@@ -308,7 +308,9 @@ class Table extends Component {
 
         return (
             <div>
-                {this.showModal()}
+                {
+                    //this.showModal()
+                }
                 {this.showTable()}
                 <ButtonToolbar>
                     {this.showCreateButton()}
